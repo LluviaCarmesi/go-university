@@ -1,0 +1,156 @@
+CREATE DATABASE go_university;
+
+USE go_university;
+
+CREATE TABLE users (
+    email VARCHAR(255),
+    email_alias VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(12),
+    home_address VARCHAR(511),
+    role ENUM('student', 'professor', 'admin') DEFAULT 'student',
+    mustChangePW BOOLEAN DEFAULT TRUE,
+    PRIMARY KEY (email)
+);
+
+CREATE TABLE courses (
+    id VARCHAR(10),
+    name VARCHAR(255) NOT NULL,
+    description VARCHAR(511),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE appointments (
+    id INT AUTO_INCREMENT,
+    student_email VARCHAR(255) NOT NULL,
+    admin_email VARCHAR(255) NOT NULL,
+    is_complete BOOLEAN DEFAULT FALSE,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_appointments_admin_email FOREIGN KEY (admin_email) REFERENCES users(email),
+    CONSTRAINT fk_appointments_student_email FOREIGN KEY (student_email) REFERENCES users(email)
+);
+
+CREATE TABLE semesters (
+    id INT AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE taught_courses (
+    id INT AUTO_INCREMENT,
+    course_id VARCHAR(10) NOT NULL,
+    semester_id INT NOT NULL,
+    professor_email VARCHAR(255) NOT NULL,
+    max_students INT NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_taught_courses_course_id FOREIGN KEY (course_id) REFERENCES courses(id),
+    CONSTRAINT fk_taught_courses_course_semester_id FOREIGN KEY (semester_id) REFERENCES semesters(id),
+    CONSTRAINT fk_taught_courses_professor_email FOREIGN KEY (professor_email) REFERENCES users(email)
+);
+
+CREATE TABLE registrations (
+    id INT AUTO_INCREMENT,
+    student_email VARCHAR(255) NOT NULL,
+    taught_course_id INT NOT NULL,
+    final_grade DECIMAL(5, 2),
+    status VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_registrations_student_email FOREIGN KEY (student_email) REFERENCES users(email),
+    CONSTRAINT fk_registrations_taught_course_id FOREIGN KEY (taught_course_id) REFERENCES taught_courses(id)
+);
+
+CREATE TABLE course_schedules (
+    id INT AUTO_INCREMENT,
+    taught_course_id INT NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_course_schedules_taught_course_id FOREIGN KEY (taught_course_id) REFERENCES taught_courses(id)
+);
+
+INSERT INTO courses
+VALUES (
+    "CS300",
+    "Golang Programming",
+    "Learn how to program in Golang (Go) in this course."
+),
+(
+    "CS400",
+    "Data Structures",
+    "Learn the various data structures used all other the real world."
+),
+(
+    "CS100",
+    "Web Development",
+    "Learn the basic principles of devloping a website. JavaScript, HTML, and CSS will be taught along with a JS framework."
+);
+
+INSERT INTO users
+VALUES
+(
+    "sbasandrai@go.edu",
+    "sbasandrai@go.edu",
+    "",
+    "Sandeep",
+    "Basandrai",
+    "19820093028",
+    "123 Apple Street, Banana Town, Kiwi, Watermelon",
+    "admin",
+    FALSE
+),
+(
+    "parli@go.edu",
+    "parli@go.edu",
+    "",
+    "Pramith",
+    "Arli",
+    "18273928392",
+    "817 Apple Street, Banana Town, Kiwi, Watermelon",
+    "professor",
+    FALSE
+),
+(
+    "tperson@go.edu",
+    "tperson@go.edu",
+    "",
+    "Tester",
+    "Person",
+    "18273910293",
+    "182 Apple Street, Banana Town, Kiwi, Watermelon",
+    "student",
+    FALSE
+);
+
+INSERT INTO semesters
+VALUES
+(
+    1,
+    "FALL 2023",
+    "2023-08-29 00:00:00",
+    "2023-12-15 00:00:00"
+),
+(
+    2,
+    "SPRING 2024",
+    "2024-01-15 00:00:00",
+    "2024-05-10 00:00:00"
+),
+(
+    3,
+    "FALL 2024",
+    "2024-08-27 00:00:00",
+    "2024-12-13 00:00:00"
+),
+(
+    4,
+    "SPRING 2025",
+    "2025-01-13 00:00:00",
+    "2025-05-09 00:00:00"
+);
