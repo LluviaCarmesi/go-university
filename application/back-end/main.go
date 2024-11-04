@@ -1,32 +1,15 @@
 package main;
-import "fmt";
-import "back-end/services";
 import "back-end/services/get";
-import _ "github.com/go-sql-driver/mysql";
+import "net/http";
+import "log";
+import "back-end/settings";
+import "encoding/json";
 
-type Course struct {
-	ID string `json:id`
-	Name string `json:"name"`
+func testGET(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(get.Courses());
 }
 
 func main() {
-
-	dbConnection := services.ConnectToDB();
-	defer dbConnection.Close();
-
-	getResults := get.Students(dbConnection);
-	defer getResults.Close();
-	
-	for getResults.Next() {
-		var course Course;
-
-		err := getResults.Scan(&course.ID, &course.Name);
-
-		if (err != nil) {
-			panic(err.Error())
-		}
-
-		fmt.Println(course.ID);
-	}
-
+	http.HandleFunc(settings.STUDENTS_PATH, testGET);
+	log.Fatal(http.ListenAndServe(":8081", nil));
 }
