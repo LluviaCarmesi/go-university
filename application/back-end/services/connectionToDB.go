@@ -5,7 +5,7 @@ import _ "github.com/go-sql-driver/mysql";
 import "fmt";
 
 func ConnectToDB() *sql.DB {
-	connection, err := sql.Open("mysql", "root:tooR@tcp(127.0.0.1:3306)/go_university");
+	connection, err := sql.Open("mysql", "root:tooR@tcp(127.0.0.1:3306)/go_university?parseTime=true");
 	if (err != nil) {
 		fmt.Println("Couldn't connect");
 		panic(err);
