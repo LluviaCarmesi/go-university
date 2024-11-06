@@ -25,11 +25,27 @@ func getSemesters (w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(get.Semesters());
 }
 
+func getTaughtCourses (w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(get.TaughtCourses());
+}
+
+func getRegistrations (w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(get.Registrations());
+}
+
+func getCourseSchedules (w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(get.CourseSchedules());
+}
+
 func main() {
 	http.HandleFunc(settings.STUDENTS_PATH, getStudents);
 	http.HandleFunc(settings.COURSES_PATH, getCourses);
 	http.HandleFunc(settings.USERS_PATH, getUsers);
 	http.HandleFunc(settings.APPOINTMENTS_PATH, getAppointments);
 	http.HandleFunc(settings.SEMESTERS_PATH, getSemesters);
+	http.HandleFunc(settings.TAUGHT_COURSES_PATH, getTaughtCourses);
+	http.HandleFunc(settings.REGISTRATIONS_PATH, getRegistrations);
+	http.HandleFunc(settings.COURSE_SCHEDULES_PATH, getCourseSchedules);
+
 	log.Fatal(http.ListenAndServe(":8080", nil));
 }
