@@ -1,0 +1,29 @@
+<script lang="ts">
+    import "../styles/components/navigation.css";
+    import * as strings from "../strings/ENUSStrings";
+    import type IRole from "../interfaces/IRole";
+
+    export let role: IRole;
+</script>
+
+<div class="linkContainer">
+    <div class="titleLinkContainer">
+        <a class="titleLink link" href="/">{strings.GO_UNIVERSITY}</a>
+    </div>
+    {#if role.isAdmin}
+        <div>
+            <a href="/courses">Courses</a>
+            <a href="/appointments">Appointments</a>
+            <a href="/accounts">Accounts</a>
+        </div>
+    {:else if role.isProfessor}
+        <div>
+            <a href="/courses">Courses</a>
+        </div>
+    {:else if role.isStudent}
+        <div>
+            <a href="/courses">Courses</a>
+            <a href="/appointments">Appointments</a>
+        </div>
+    {/if}
+</div>
