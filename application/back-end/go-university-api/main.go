@@ -1,12 +1,45 @@
 package main;
 import "back-end/services/get";
+import "back-end/services/post";
 import "net/http";
 import "log";
 import "back-end/settings";
 import "encoding/json";
+import "back-end/models";
+import "fmt";
 
-func getCourses(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(get.Courses());
+func enableSettings(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Headers", "*");
+	(*w).Header().Set("Access-Control-Allow-Origin", "*");
+	(*w).Header().Set("Access-Control-Allow-Methods", "*");
+}
+
+func courses(w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
+	switch (r.Method) {
+		case http.MethodGet:
+			json.NewEncoder(w).Encode(get.Courses());
+			break;
+		case http.MethodPost:
+			var course models.Course;
+			fmt.Println("Working");
+			fmt.Println(r.Body);
+			err := json.NewDecoder(r.Body).Decode(course);
+			fmt.Println(course);
+			if (err != nil) {
+				panic("Course not structured properly: " + err.Error());
+			}
+			postResponse := post.AddCourse(course);
+			if (!postResponse.IsSuccessful) {
+				panic(postResponse.ErrorMessage);
+			}
+			break;
+		case http.MethodOptions:
+			break;
+		default:
+			panic("Method not supported");
+	}
+
 }
 
 func getStudents(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +72,7 @@ func getCourseSchedules (w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc(settings.STUDENTS_PATH, getStudents);
-	http.HandleFunc(settings.COURSES_PATH, getCourses);
+	http.HandleFunc(settings.COURSES_PATH, courses);
 	http.HandleFunc(settings.USERS_PATH, getUsers);
 	http.HandleFunc(settings.APPOINTMENTS_PATH, getAppointments);
 	http.HandleFunc(settings.SEMESTERS_PATH, getSemesters);

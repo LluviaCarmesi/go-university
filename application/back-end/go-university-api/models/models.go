@@ -3,8 +3,9 @@ package models;
 import "time";
 
 type Course struct {
-	ID int `json:id`
+	ID string `json:id`
 	Name string `json:"name"`
+	Description string `json:description`
 }
 
 type User struct {
@@ -55,4 +56,9 @@ type CourseSchedule struct {
 	TaughtCourseID int `json:taught_course_id`
 	StartTime time.Time `json:start_time`
 	EndTime time.Time `json:end_time`
+}
+
+type ServiceResponse struct {
+	IsSuccessful bool `json:is_successful`
+	ErrorMessage string `json:error_message`
 }

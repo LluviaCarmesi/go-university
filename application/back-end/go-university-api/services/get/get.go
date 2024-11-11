@@ -5,12 +5,12 @@ import _ "github.com/go-sql-driver/mysql";
 import "back-end/services";
 import "back-end/settings";
 
-func Courses () []models.Course {
+func Courses() []models.Course {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	courses := []models.Course{};
 	
-	results, err := dbConnection.Query("SELECT id,name FROM courses");
+	results, err := dbConnection.Query("SELECT * FROM courses");
 	defer results.Close();
 
 	if (err != nil) {
@@ -20,7 +20,10 @@ func Courses () []models.Course {
 	for results.Next() {
 		var course models.Course;
 
-		err := results.Scan(&course.ID, &course.Name);
+		err := results.Scan(
+			&course.ID,
+			&course.Name,
+			&course.Description);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
@@ -31,7 +34,7 @@ func Courses () []models.Course {
 	return courses;
 }
 
-func Users () []models.User {
+func Users() []models.User {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	users := []models.User{};
@@ -64,7 +67,7 @@ func Users () []models.User {
 	return users;
 }
 
-func Students () []models.User {
+func Students() []models.User {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	users := []models.User{};
