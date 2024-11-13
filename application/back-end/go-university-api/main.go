@@ -6,11 +6,10 @@ import "log";
 import "back-end/settings";
 import "encoding/json";
 import "back-end/models";
-import "fmt";
 
 func enableSettings(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Headers", "*");
-	(*w).Header().Set("Access-Control-Allow-Origin", "*");
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:5173");
 	(*w).Header().Set("Access-Control-Allow-Methods", "*");
 }
 
@@ -22,17 +21,12 @@ func courses(w http.ResponseWriter, r *http.Request) {
 			break;
 		case http.MethodPost:
 			var course models.Course;
-			fmt.Println("Working");
-			fmt.Println(r.Body);
-			err := json.NewDecoder(r.Body).Decode(course);
-			fmt.Println(course);
+			err := json.NewDecoder(r.Body).Decode(&course);
 			if (err != nil) {
 				panic("Course not structured properly: " + err.Error());
 			}
 			postResponse := post.AddCourse(course);
-			if (!postResponse.IsSuccessful) {
-				panic(postResponse.ErrorMessage);
-			}
+			json.NewEncoder(w).Encode(postResponse);
 			break;
 		case http.MethodOptions:
 			break;

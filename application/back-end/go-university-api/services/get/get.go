@@ -10,7 +10,7 @@ func Courses() []models.Course {
 	defer dbConnection.Close();
 	courses := []models.Course{};
 	
-	results, err := dbConnection.Query("SELECT * FROM courses");
+	results, err := dbConnection.Query(settings.GET_COURSES_QUERY);
 	defer results.Close();
 
 	if (err != nil) {

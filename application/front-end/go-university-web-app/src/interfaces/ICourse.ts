@@ -1,5 +1,5 @@
 export default interface ICourse {
-    courseID: string;
-    courseName: string;
-    courseDescription: string;
+    ID: string;
+    Name: string;
+    Description: string;
 }

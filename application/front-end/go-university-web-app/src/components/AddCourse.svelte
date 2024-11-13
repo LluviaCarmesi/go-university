@@ -8,9 +8,9 @@
     let isSuccessful = false;
 
     const course: ICourse = {
-        courseID: "",
-        courseName: "",
-        courseDescription: "",
+        ID: "",
+        Name: "",
+        Description: "",
     };
 
     function handleTextChange(event: any) {
@@ -47,21 +47,21 @@
     {/if}
     <TextField
         fieldLabel="Course ID"
-        currentValue={course.courseID}
+        currentValue={course.ID}
         onChangeTextField={handleTextChange}
-        inputID="courseID"
+        inputID="ID"
     />
     <TextField
         fieldLabel="Course Name"
-        currentValue={course.courseName}
+        currentValue={course.Name}
         onChangeTextField={handleTextChange}
-        inputID="courseName"
+        inputID="Name"
     />
     <TextField
         fieldLabel="Course Description"
-        currentValue={course.courseDescription}
+        currentValue={course.Description}
         onChangeTextField={handleTextChange}
-        inputID="courseDescription"
+        inputID="Description"
     />
     <button on:click={submitCourse}>Submit Course</button>
     <a href="/courses">Cancel</a>

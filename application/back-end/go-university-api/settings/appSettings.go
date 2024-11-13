@@ -12,6 +12,8 @@ const REGISTRATIONS_PATH = API_ROOT + "/registrations";
 const COURSE_SCHEDULES_PATH = API_ROOT + "/course_schedules";
 
 // Queries
+const GET_COURSES_QUERY = "SELECT id, name, description FROM courses";
+const INSERT_COURSE_QUERY = "INSERT INTO COURSES (id, name, description) ";
 const GET_USERS_QUERY =
 	"SELECT email,email_alias,first_name,last_name,phone_number,home_address,role " +
 	"FROM users";
