@@ -1,2 +1,1 @@
-export const ADD_COURSE_URI = "";
-export const COURSES_API_URI = "";
+export const COURSES_API_URI = "http://localhost:8080/api/courses";

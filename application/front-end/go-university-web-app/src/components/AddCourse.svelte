@@ -1,19 +1,16 @@
 <script lang="ts">
     import type ICourse from "../interfaces/ICourse";
+    import addCourse from "../services/addCourse";
     import TextField from "./TextField.svelte";
-
-    let courseID = "";
-    let courseName = "";
-    let courseDescription = "";
 
     let isLoading = true;
     let errorMessage = "";
     let isSuccessful = false;
 
     const course: ICourse = {
-        courseID: "",
-        courseName: "",
-        courseDescription: "",
+        ID: "",
+        Name: "",
+        Description: "",
     };
 
     function handleTextChange(event: any) {
@@ -50,22 +47,22 @@
     {/if}
     <TextField
         fieldLabel="Course ID"
-        currentValue={courseID}
+        currentValue={course.ID}
         onChangeTextField={handleTextChange}
-        inputID="courseID"
+        inputID="ID"
     />
     <TextField
         fieldLabel="Course Name"
-        currentValue={courseName}
+        currentValue={course.Name}
         onChangeTextField={handleTextChange}
-        inputID="courseName"
+        inputID="Name"
     />
     <TextField
         fieldLabel="Course Description"
-        currentValue={courseDescription}
+        currentValue={course.Description}
         onChangeTextField={handleTextChange}
-        inputID="courseDescription"
+        inputID="Description"
     />
-    <button >Submit Course</button>
+    <button on:click={submitCourse}>Submit Course</button>
     <a href="/courses">Cancel</a>
 </div>
