@@ -16,6 +16,8 @@ type User struct {
 	PhoneNumber string `json:phone_number`
 	HomeAddress string `json:home_address`
 	Role string `json:role`
+	Password string `json:password`
+	MustChangePW bool `json:must_change_pw`
 }
 
 type Appointment struct {

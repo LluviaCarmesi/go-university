@@ -11,7 +11,7 @@ CREATE TABLE users (
     phone_number VARCHAR(12),
     home_address VARCHAR(511),
     role ENUM('student', 'professor', 'admin') DEFAULT 'student',
-    mustChangePW BOOLEAN DEFAULT TRUE,
+    must_change_pw BOOLEAN DEFAULT TRUE,
     PRIMARY KEY (email)
 );
 
