@@ -33,7 +33,6 @@ func courses(w http.ResponseWriter, r *http.Request) {
 		default:
 			panic("Method not supported");
 	}
-
 }
 
 func getStudents(w http.ResponseWriter, r *http.Request) {

@@ -13,10 +13,13 @@ const COURSE_SCHEDULES_PATH = API_ROOT + "/course_schedules";
 
 // Queries
 const GET_COURSES_QUERY = "SELECT id, name, description FROM courses";
-const INSERT_COURSE_QUERY = "INSERT INTO COURSES (id, name, description) ";
+const INSERT_COURSE_QUERY = "INSERT INTO courses (id,name,description) ";
 const GET_USERS_QUERY =
 	"SELECT email,email_alias,first_name,last_name,phone_number,home_address,role " +
 	"FROM users";
+const INSERT_USER_QUERY = 
+	"INSERT INTO users (email,email_alias,password,first_name,last_name,phone_number," +
+	"home_address,role) ";
 const GET_STUDENTS_QUERY =
 	"SELECT email,email_alias,first_name,last_name,phone_number,home_address,role " +
 	"FROM users " + 
@@ -24,6 +27,8 @@ const GET_STUDENTS_QUERY =
 const GET_APPOINTMENTS_QUERY =
 	"SELECT id,student_email,admin_email,is_complete,start_time,end_time " +
 	"FROM appointments";
+const INSERT_APPOINTMENT_QUERY =
+	"INSERT INTO appointments (student_email,admin_email,start_time,end_time) "
 const GET_SEMESTERS_QUERY =
 	"SELECT id,name,start_date,end_date " +
 	"FROM semesters";
