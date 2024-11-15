@@ -32,12 +32,20 @@ const INSERT_APPOINTMENT_QUERY =
 const GET_SEMESTERS_QUERY =
 	"SELECT id,name,start_date,end_date " +
 	"FROM semesters";
+const INSERT_SEMESTER_QUERY = 
+	"INSERT INTO semesters (name,start_date,end_date) ";
 const GET_TAUGHT_COURSES_QUERY = 
 	"SELECT id,course_id,semester_id,professor_email,max_students,location " +
 	"FROM taught_courses";
+const INSERT_TAUGHT_COURSE_QUERY =
+	"INSERT INTO taught_courses (course_id,semester_id,professer_email,max_students,location) ";
 const GET_REGISTRATIONS_QUERY =
 	"SELECT id,student_email,taught_course_id,final_grade,status " +
 	"FROM registrations";
+const INSERT_REGISTRATION_QUERY =
+	"INSERT INTO registrations (student_email,taught_course_id,final_grade,status) "
 const GET_COURSE_SCHEDULES_QUERY =
 	"SELECT id,taught_course_id,start_time,end_time " +
 	"FROM course_schedules";
+const INSERT_COURSE_SCHEDULE_QUERY =
+	"INSERT INTO course_schedules (taught_course_id,start_time,end_time) ";

@@ -30,9 +30,9 @@ func AddCourse(course models.Course) models.ServiceResponse {
 
 	insertedID, err := results.LastInsertId();
 	if err != nil {
-		log.Fatalf("impossible to retrieve last inserted id: %s", err.Error())
+		log.Fatalf("impossible to retrieve last inserted id for courses: %s", err.Error())
 	}
-	log.Printf("inserted id: %d", insertedID);
+	log.Printf("inserted id for courses: %d", insertedID);
 
 	return serviceResponse;
 }
@@ -65,9 +65,9 @@ func AddUser(user models.User) models.ServiceResponse {
 
 	insertedID, err := results.LastInsertId();
 	if err != nil {
-		log.Fatalf("impossible to retrieve last inserted id: %s", err.Error())
+		log.Fatalf("impossible to retrieve last inserted id for users: %s", err.Error())
 	}
-	log.Printf("inserted id: %d", insertedID);
+	log.Printf("inserted id for users: %d", insertedID);
 
 	return serviceResponse;
 }
@@ -96,9 +96,132 @@ func AddAppointment(appointment models.Appointment) models.ServiceResponse {
 
 	insertedID, err := results.LastInsertId();
 	if err != nil {
-		log.Fatalf("impossible to retrieve last inserted id: %s", err.Error())
+		log.Fatalf("impossible to retrieve last inserted id for appointments: %s", err.Error())
 	}
-	log.Printf("inserted id: %d", insertedID);
+	log.Printf("inserted id for appointments: %d", insertedID);
+
+	return serviceResponse;
+}
+
+func AddSemester(semester models.Semester) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	
+	query := settings.INSERT_SEMESTER_QUERY + "VALUES (?, ?, ?)";
+	results, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		semester.Name,
+		semester.StartDate,
+		semester.EndDate);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to insert semester: " + err.Error();
+		return serviceResponse;
+	}
+
+	insertedID, err := results.LastInsertId();
+	if err != nil {
+		log.Fatalf("impossible to retrieve last inserted id for semesters: %s", err.Error())
+	}
+	log.Printf("inserted id for semesters: %d", insertedID);
+
+	return serviceResponse;
+}
+
+func AddTaughtCourse(taughtCourse models.TaughtCourse) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	
+	query := settings.INSERT_TAUGHT_COURSE_QUERY + "VALUES (?, ?, ?, ?, ?)";
+	results, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		taughtCourse.CourseID,
+		taughtCourse.SemesterID,
+		taughtCourse.ProfessorEmail,
+		taughtCourse.MaxStudents,
+		taughtCourse.Location);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to insert taught_course: " + err.Error();
+		return serviceResponse;
+	}
+
+	insertedID, err := results.LastInsertId();
+	if err != nil {
+		log.Fatalf("impossible to retrieve last inserted id for taught_courses: %s", err.Error())
+	}
+	log.Printf("inserted id for taught_courses: %d", insertedID);
+
+	return serviceResponse;
+}
+
+func AddRegistration(registration models.Registration) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	
+	query := settings.INSERT_REGISTRATION_QUERY + "VALUES (?, ?, ?, ?)";
+	results, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		registration.StudentEmail,
+		registration.TaughtCourseID,
+		registration.FinalGrade,
+		registration.Status);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to insert registrations: " + err.Error();
+		return serviceResponse;
+	}
+
+	insertedID, err := results.LastInsertId();
+	if err != nil {
+		log.Fatalf("impossible to retrieve last inserted id for registrations: %s", err.Error())
+	}
+	log.Printf("inserted id for registrations: %d", insertedID);
+
+	return serviceResponse;
+}
+
+func AddCourseSchedule(courseSchedule models.CourseSchedule) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	
+	query := settings.INSERT_COURSE_SCHEDULE_QUERY + "VALUES (?, ?, ?)";
+	results, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		courseSchedule.TaughtCourseID,
+		courseSchedule.StartTime,
+		courseSchedule.EndTime);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to insert course_schedules: " + err.Error();
+		return serviceResponse;
+	}
+
+	insertedID, err := results.LastInsertId();
+	if err != nil {
+		log.Fatalf("impossible to retrieve last inserted id for course_schedules: %s", err.Error())
+	}
+	log.Printf("inserted id for course_schedules: %d", insertedID);
 
 	return serviceResponse;
 }
