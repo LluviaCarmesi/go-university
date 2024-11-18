@@ -3,7 +3,7 @@
     import addCourse from "../services/addCourse";
     import TextField from "./TextField.svelte";
 
-    let isLoading = true;
+    let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
 
@@ -18,6 +18,7 @@
     }
 
     async function submitCourse() {
+        isLoading = true;
         const addCourseResponse = await addCourse(course);
         isSuccessful = !addCourseResponse.doesErrorExist;
         if (!isSuccessful) {
@@ -25,6 +26,7 @@
         } else {
             errorMessage = "";
         }
+        isLoading = false;
     }
 </script>
 

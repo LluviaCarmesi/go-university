@@ -3,7 +3,7 @@ package settings;
 // Paths
 const API_ROOT = "/api";
 const COURSES_PATH = API_ROOT + "/courses";
-const USERS_PATH = API_ROOT + "/users";
+const USERS_PATH = API_ROOT + "/users/";
 const STUDENTS_PATH = USERS_PATH + "/students";
 const APPOINTMENTS_PATH = API_ROOT + "/appointments";
 const SEMESTERS_PATH = API_ROOT + "/semesters";
@@ -12,8 +12,14 @@ const REGISTRATIONS_PATH = API_ROOT + "/registrations";
 const COURSE_SCHEDULES_PATH = API_ROOT + "/course_schedules";
 
 // Queries
-const GET_COURSES_QUERY = "SELECT id, name, description FROM courses";
-const INSERT_COURSE_QUERY = "INSERT INTO courses (id,name,description) ";
+const GET_COURSES_QUERY =
+	"SELECT id, name, description FROM courses";
+const INSERT_COURSE_QUERY =
+	"INSERT INTO courses (id,name,description) ";
+const UPDATE_COURSE_QUERY =
+	"UPDATE courses SET name = ?, description = ? WHERE id = ?";
+const DELETE_COURSE_QUERY =
+	"DELETE FROM courses WHERE id = ?";
 const GET_USERS_QUERY =
 	"SELECT email,email_alias,first_name,last_name,phone_number,home_address,role " +
 	"FROM users";
@@ -49,3 +55,11 @@ const GET_COURSE_SCHEDULES_QUERY =
 	"FROM course_schedules";
 const INSERT_COURSE_SCHEDULE_QUERY =
 	"INSERT INTO course_schedules (taught_course_id,start_time,end_time) ";
+const GET_DEPARTMENTS_QUERY =
+	"SELECT id,name FROM departments";
+const INSERT_DEPARTMENT_QUERY =
+	"INSERT INTO departments (name) ";
+const GET_PROFESSORS_IN_DEPARTMENTS_QUERY =
+	"SELECT professor_email,department_id,is_leader FROM professors_in_departments";
+const INSERT_PROFESSOR_IN_DEPARTMENT_QUERY =
+	"INSERT INTO professors_in_departments (professor_email,department_id,is_leader) ";

@@ -4,19 +4,30 @@ import "time";
 
 type Course struct {
 	ID string `json:id`
-	Name string `json:"name"`
+	Name string `json:name`
 	Description string `json:description`
+}
+
+type Department struct {
+	ID string `json:id`
+	Name string `json:"name"`
+}
+
+type ProfessorInDepartment struct {
+	ProfessorEmail string `json:professor_email`
+	DepartmentID int `json:department_id`
+	IsLeader bool `json:is_leader`
 }
 
 type User struct {
 	Email string `json:email`
 	EmailAlias string `json:email_alias`
+	Password string `json:password`
 	FirstName string `json:first_name`
 	LastName string `json:last_name`
 	PhoneNumber string `json:phone_number`
 	HomeAddress string `json:home_address`
 	Role string `json:role`
-	Password string `json:password`
 	MustChangePW bool `json:must_change_pw`
 }
 

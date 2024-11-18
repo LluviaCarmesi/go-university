@@ -1,7 +1,7 @@
 package post;
 
 import "back-end/models";
-import "github.com/go-sql-driver/mysql";
+//import "github.com/go-sql-driver/mysql";
 import "back-end/services";
 import "back-end/settings";
 import "log";
@@ -33,6 +33,64 @@ func AddCourse(course models.Course) models.ServiceResponse {
 		log.Fatalf("impossible to retrieve last inserted id for courses: %s", err.Error())
 	}
 	log.Printf("inserted id for courses: %d", insertedID);
+
+	return serviceResponse;
+}
+
+func AddDepartment(department models.Department) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	
+	query := settings.INSERT_DEPARTMENT_QUERY + "VALUES (?)";
+	results, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		department.Name);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to insert department: " + err.Error();
+		return serviceResponse;
+	}
+
+	insertedID, err := results.LastInsertId();
+	if err != nil {
+		log.Fatalf("impossible to retrieve last inserted id for departments: %s", err.Error())
+	}
+	log.Printf("inserted id for departments: %d", insertedID);
+
+	return serviceResponse;
+}
+
+func AddProfessorInDepartment(professorInDepartment models.ProfessorInDepartment) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	
+	query := settings.INSERT_PROFESSOR_IN_DEPARTMENT_QUERY + "VALUES (?, ?, ?)";
+	results, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		professorInDepartment.ProfessorEmail,
+		professorInDepartment.DepartmentID,
+		professorInDepartment.IsLeader);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to insert professor in department: " + err.Error();
+		return serviceResponse;
+	}
+
+	insertedID, err := results.LastInsertId();
+	if err != nil {
+		log.Fatalf("impossible to retrieve last inserted id for professors_in_departments: %s", err.Error())
+	}
+	log.Printf("inserted id for professors_in_departments: %d", insertedID);
 
 	return serviceResponse;
 }

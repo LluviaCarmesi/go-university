@@ -6,7 +6,7 @@ export default async function addCourse(item: ICourse) {
     let doesErrorExist = false;
     let errorMessage = "";
     await fetch(`${COURSES_API_URI}`, {
-        method: "POST",
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json"
         },

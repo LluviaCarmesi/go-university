@@ -1,11 +1,11 @@
 package get;
 
 import "back-end/models";
-import _ "github.com/go-sql-driver/mysql";
+//import "github.com/go-sql-driver/mysql";
 import "back-end/services";
 import "back-end/settings";
 
-func Courses() []models.Course {
+func GetCourses() []models.Course {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	courses := []models.Course{};
@@ -34,7 +34,64 @@ func Courses() []models.Course {
 	return courses;
 }
 
-func Users() []models.User {
+func GetDepartments() []models.Department {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	departments := []models.Department{};
+	
+	results, err := dbConnection.Query(settings.GET_DEPARTMENTS_QUERY);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		var department models.Department;
+
+		err := results.Scan(
+			&department.ID,
+			&department.Name);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+
+		departments = append(departments, department);
+	}
+
+	return departments;
+}
+
+func GetProfessorsInDepartments() []models.ProfessorInDepartment {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	professorsInDepartments := []models.ProfessorInDepartment{};
+	
+	results, err := dbConnection.Query(settings.GET_PROFESSORS_IN_DEPARTMENTS_QUERY);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		var professorInDepartment models.ProfessorInDepartment;
+
+		err := results.Scan(
+			&professorInDepartment.ProfessorEmail,
+			&professorInDepartment.DepartmentID,
+			&professorInDepartment.IsLeader);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+
+		professorsInDepartments = append(professorsInDepartments, professorInDepartment);
+	}
+
+	return professorsInDepartments;
+}
+
+func GetUsers() []models.User {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	users := []models.User{};
@@ -67,7 +124,7 @@ func Users() []models.User {
 	return users;
 }
 
-func Students() []models.User {
+func GetStudents() []models.User {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	users := []models.User{};
@@ -100,7 +157,7 @@ func Students() []models.User {
 	return users;
 }
 
-func Appointments () []models.Appointment {
+func GetAppointments () []models.Appointment {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	appointments := []models.Appointment{};
@@ -132,7 +189,7 @@ func Appointments () []models.Appointment {
 	return appointments;
 }
 
-func Semesters () []models.Semester {
+func GetSemesters () []models.Semester {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	semesters := []models.Semester{};
@@ -162,7 +219,7 @@ func Semesters () []models.Semester {
 	return semesters;
 }
 
-func TaughtCourses() []models.TaughtCourse {
+func GetTaughtCourses() []models.TaughtCourse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	taughtCourses := []models.TaughtCourse{};
@@ -194,7 +251,7 @@ func TaughtCourses() []models.TaughtCourse {
 	return taughtCourses;
 }
 
-func Registrations() []models.Registration {
+func GetRegistrations() []models.Registration {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	registrations := []models.Registration{};
@@ -225,7 +282,7 @@ func Registrations() []models.Registration {
 	return registrations;
 }
 
-func CourseSchedules() []models.CourseSchedule {
+func GetCourseSchedules() []models.CourseSchedule {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	courseSchedules := []models.CourseSchedule{};
