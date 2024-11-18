@@ -1,7 +1,7 @@
 package patch;
 
 import "back-end/models";
-//import "github.com/go-sql-driver/mysql";
+import "github.com/go-sql-driver/mysql";
 import "back-end/settings";
 import "back-end/services";
 import "log";
