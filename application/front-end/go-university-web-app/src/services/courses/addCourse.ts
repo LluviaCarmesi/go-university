@@ -1,0 +1,35 @@
+import { COURSES_API_URI } from "../../appSettings";
+import type ICourse from "../../interfaces/ICourse";
+import isStatusGood from "../../utilities/isStatusGood";
+
+export default async function addCourse(item: ICourse) {
+    let doesErrorExist = false;
+    let errorMessage = "";
+    await fetch(COURSES_API_URI, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            ID: item.ID,
+            Name: item.Name,
+            Description: item.Description,
+            Credits: parseInt(item.Credits)
+        })
+    })
+        .then((response) => {
+            doesErrorExist = !isStatusGood(response.status);
+            return response.json();
+        })
+        .then((result) => {
+            if (doesErrorExist) {
+                errorMessage = result.response;
+            }
+        })
+        .catch((error) => {
+            doesErrorExist = true;
+            errorMessage = error;
+            console.log(error);
+        });
+    return { doesErrorExist, errorMessage };
+}

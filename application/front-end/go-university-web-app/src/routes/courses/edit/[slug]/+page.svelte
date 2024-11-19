@@ -1,11 +1,13 @@
 <script lang="ts">
-    import Navigation from "../../../components/Navigation.svelte";
-    import type ICourse from "../../../interfaces/ICourse";
-    import addCourse from "../../../services/courses/addCourse";
-    import TextField from "../../../components/TextField.svelte";
-    import type IRole from "../../../interfaces/IRole";
-    import "../../../styles/pages/courses/courses.css";
-    import "../../../styles/common.css";
+    import Navigation from "../../../../components/Navigation.svelte";
+    import type ICourse from "../../../../interfaces/ICourse";
+    import TextField from "../../../../components/TextField.svelte";
+    import type IRole from "../../../../interfaces/IRole";
+    import getCourseByID from "../../../../services/courses/getCourseByID";
+    import editCourse from "../../../../services/courses/editCourse";
+    import "../../../../styles/pages/courses/courses.css";
+    import "../../../../styles/common.css";
+    export let data;
 
     let role: IRole = {
         isAdmin: true,
@@ -17,7 +19,7 @@
     let errorMessage = "";
     let isSuccessful = false;
 
-    const course: ICourse = {
+    let course: ICourse = {
         ID: "",
         Name: "",
         Description: "",
@@ -30,25 +32,36 @@
 
     async function submitCourse() {
         isLoading = true;
-        const addCourseResponse = await addCourse(course);
-        isSuccessful = !addCourseResponse.doesErrorExist;
+        const editCourseResponse = await editCourse(course);
+        isSuccessful = !editCourseResponse.doesErrorExist;
         if (!isSuccessful) {
-            errorMessage = addCourseResponse.errorMessage;
+            errorMessage = editCourseResponse.errorMessage;
         } else {
             errorMessage = "";
         }
         isLoading = false;
     }
+
+    async function getCourseByIDResponse() {
+        const courseResponse = await getCourseByID(data.id);
+        if (courseResponse.isSuccessful) {
+            course = courseResponse.course;
+        } else {
+            errorMessage = courseResponse.errorMessage;
+        }
+        isLoading = false;
+    }
+    getCourseByIDResponse();
 </script>
 
 <Navigation {role} />
 
 <div id="courseForm">
     <div class="mainHeadingContainer">
-        <h2>Add a Course</h2>
+        <h2>Edit {course.ID} Course</h2>
     </div>
     <div class="descriptionContainer">
-        <span>Add a course using the form below! </span>
+        <span>Edit the course using the form below! </span>
     </div>
     {#if !!errorMessage}
         <div class="errorContainer">
@@ -57,17 +70,7 @@
     {/if}
     {#if isSuccessful}
         <div class="successContainer">
-            <span>Course was added successfully!</span>
-        </div>
-    {/if}
-    {#if !!errorMessage}
-        <div>
-            <span class="error">{errorMessage}</span>
-        </div>
-    {/if}
-    {#if isSuccessful}
-        <div>
-            <span class="success">Course was added sucessfully!</span>
+            <span>Course was modified successfully!</span>
         </div>
     {/if}
     <TextField
@@ -75,6 +78,7 @@
         currentValue={course.ID}
         onChangeTextField={handleTextChange}
         inputID="ID"
+        isDisabled={true}
     />
     <TextField
         fieldLabel="Course Name"
