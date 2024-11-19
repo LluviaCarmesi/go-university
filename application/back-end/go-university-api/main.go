@@ -19,7 +19,13 @@ func courses(w http.ResponseWriter, r *http.Request) {
 	enableSettings(&w);
 	switch (r.Method) {
 		case http.MethodGet:
-			json.NewEncoder(w).Encode(get.GetCourses());
+			pathParts := strings.Split(r.URL.Path, "/");
+			courseID := pathParts[3];
+			if (courseID == "") {
+				json.NewEncoder(w).Encode(get.GetCourses());
+				return;
+			}
+			json.NewEncoder(w).Encode(get.GetCourseByID(courseID));
 			break;
 		case http.MethodPost:
 			var course models.Course;
@@ -70,14 +76,6 @@ func getStudents(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
-	pathParts := strings.Split(r.URL.Path, "/")
-	if len(pathParts) >= 3 {
-		courseID := pathParts[2];
-		if (courseID == "") {
-
-		}
-		panic("Invalid URL path");
-	}
 	json.NewEncoder(w).Encode(get.GetUsers());
 }
 
@@ -97,10 +95,6 @@ func getRegistrations (w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(get.GetRegistrations());
 }
 
-func getCourseSchedules (w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(get.GetCourseSchedules());
-}
-
 func main() {
 	http.HandleFunc(settings.STUDENTS_PATH, getStudents);
 	http.HandleFunc(settings.COURSES_PATH, courses);
@@ -109,7 +103,6 @@ func main() {
 	http.HandleFunc(settings.SEMESTERS_PATH, getSemesters);
 	http.HandleFunc(settings.TAUGHT_COURSES_PATH, getTaughtCourses);
 	http.HandleFunc(settings.REGISTRATIONS_PATH, getRegistrations);
-	http.HandleFunc(settings.COURSE_SCHEDULES_PATH, getCourseSchedules);
 
 	log.Fatal(http.ListenAndServe(":8080", nil));
 }

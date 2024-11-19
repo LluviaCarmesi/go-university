@@ -15,13 +15,14 @@ func AddCourse(course models.Course) models.ServiceResponse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	
-	query := settings.INSERT_COURSE_QUERY + "VALUES (?, ?, ?)";
+	query := settings.INSERT_COURSE_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
 		course.ID,
 		course.Name,
-		course.Description);
+		course.Description,
+		course.Credits);
 	if err != nil {
 		serviceResponse.IsSuccessful = false;
 		serviceResponse.ErrorMessage = "Unable to insert course: " + err.Error();
@@ -45,7 +46,7 @@ func AddDepartment(department models.Department) models.ServiceResponse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	
-	query := settings.INSERT_DEPARTMENT_QUERY + "VALUES (?)";
+	query := settings.INSERT_DEPARTMENT_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
@@ -73,7 +74,7 @@ func AddProfessorInDepartment(professorInDepartment models.ProfessorInDepartment
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	
-	query := settings.INSERT_PROFESSOR_IN_DEPARTMENT_QUERY + "VALUES (?, ?, ?)";
+	query := settings.INSERT_PROFESSOR_IN_DEPARTMENT_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
@@ -103,7 +104,7 @@ func AddUser(user models.User) models.ServiceResponse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	
-	query := settings.INSERT_USER_QUERY + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	query := settings.INSERT_USER_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
@@ -138,7 +139,7 @@ func AddAppointment(appointment models.Appointment) models.ServiceResponse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	
-	query := settings.INSERT_APPOINTMENT_QUERY + "VALUES (?, ?, ?, ?)";
+	query := settings.INSERT_APPOINTMENT_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
@@ -169,7 +170,7 @@ func AddSemester(semester models.Semester) models.ServiceResponse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	
-	query := settings.INSERT_SEMESTER_QUERY + "VALUES (?, ?, ?)";
+	query := settings.INSERT_SEMESTER_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
@@ -199,15 +200,17 @@ func AddTaughtCourse(taughtCourse models.TaughtCourse) models.ServiceResponse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	
-	query := settings.INSERT_TAUGHT_COURSE_QUERY + "VALUES (?, ?, ?, ?, ?)";
+	query := settings.INSERT_TAUGHT_COURSE_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
 		taughtCourse.CourseID,
-		taughtCourse.SemesterID,
+		taughtCourse.SemesterName,
 		taughtCourse.ProfessorEmail,
 		taughtCourse.MaxStudents,
-		taughtCourse.Location);
+		taughtCourse.Location,
+		taughtCourse.StartTime,
+		taughtCourse.EndTime);
 	if err != nil {
 		serviceResponse.IsSuccessful = false;
 		serviceResponse.ErrorMessage = "Unable to insert taught_course: " + err.Error();
@@ -231,7 +234,7 @@ func AddRegistration(registration models.Registration) models.ServiceResponse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	
-	query := settings.INSERT_REGISTRATION_QUERY + "VALUES (?, ?, ?, ?)";
+	query := settings.INSERT_REGISTRATION_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
@@ -250,36 +253,6 @@ func AddRegistration(registration models.Registration) models.ServiceResponse {
 		log.Fatalf("impossible to retrieve last inserted id for registrations: %s", err.Error())
 	}
 	log.Printf("inserted id for registrations: %d", insertedID);
-
-	return serviceResponse;
-}
-
-func AddCourseSchedule(courseSchedule models.CourseSchedule) models.ServiceResponse {
-	serviceResponse := models.ServiceResponse{
-		IsSuccessful: true,
-		ErrorMessage: "",
-	}
-	dbConnection := services.ConnectToDB();
-	defer dbConnection.Close();
-	
-	query := settings.INSERT_COURSE_SCHEDULE_QUERY + "VALUES (?, ?, ?)";
-	results, err := dbConnection.ExecContext(
-		context.Background(),
-		query,
-		courseSchedule.TaughtCourseID,
-		courseSchedule.StartTime,
-		courseSchedule.EndTime);
-	if err != nil {
-		serviceResponse.IsSuccessful = false;
-		serviceResponse.ErrorMessage = "Unable to insert course_schedules: " + err.Error();
-		return serviceResponse;
-	}
-
-	insertedID, err := results.LastInsertId();
-	if err != nil {
-		log.Fatalf("impossible to retrieve last inserted id for course_schedules: %s", err.Error())
-	}
-	log.Printf("inserted id for course_schedules: %d", insertedID);
 
 	return serviceResponse;
 }

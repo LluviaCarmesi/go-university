@@ -1,0 +1,24 @@
+.mainHeadingContainer {
+    margin-bottom: 20px;
+}
+
+.descriptionContainer {
+    margin-bottom: 20px;
+}
+
+.errorContainer {
+    color: RGB(255, 0, 0);
+}
+
+.successContainer {
+    color: RGB(0, 255, 0);
+}
+
+.actionsContainer {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.actionsContainer button {
+    margin-left: 10px;
+}

@@ -6,6 +6,7 @@ type Course struct {
 	ID string `json:id`
 	Name string `json:name`
 	Description string `json:description`
+	Credits int `json:credits`
 }
 
 type Department struct {
@@ -41,19 +42,19 @@ type Appointment struct {
 }
 
 type Semester struct {
-	ID int `json:id`
 	Name string `json:name`
 	StartDate time.Time `json:start_date`
-	EndDate time.Time `json:end_time`
+	EndDate time.Time `json:end_date`
 }
 
 type TaughtCourse struct {
-	ID int `json:id`
 	CourseID string `json:course_id`
-	SemesterID int `json:semester_id`
+	SemesterName string `json:semester_name`
 	ProfessorEmail string `json:professor_email`
 	MaxStudents int `json:max_students`
 	Location string `json:location`
+	StartTime time.Time `json:start_time`
+	EndTime time.Time `json:end_time`
 }
 
 type Registration struct {
@@ -62,13 +63,6 @@ type Registration struct {
 	TaughtCourseID int `json:taught_course_id`
 	FinalGrade float32 `json:final_grade`
 	Status string `json:status`
-}
-
-type CourseSchedule struct {
-	ID int `json:id`
-	TaughtCourseID int `json:taught_course_id`
-	StartTime time.Time `json:start_time`
-	EndTime time.Time `json:end_time`
 }
 
 type ServiceResponse struct {

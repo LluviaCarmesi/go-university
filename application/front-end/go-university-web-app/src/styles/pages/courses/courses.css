@@ -1,0 +1,32 @@
+#coursesTable {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#coursesTable table {
+    margin: auto;
+}
+
+#coursesTable td,
+#coursesTable th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+#courseForm {
+    margin: auto;
+    max-width: 500px;
+}
+
+#coursesLinks {
+    text-align: center;
+    margin: auto;
+    max-width: 600px;
+}
+
+#coursesLinks div {
+    margin-bottom: 20px;
+    font-size: 20px;
+}

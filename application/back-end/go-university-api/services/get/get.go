@@ -4,6 +4,7 @@ import "back-end/models";
 //import "github.com/go-sql-driver/mysql";
 import "back-end/services";
 import "back-end/settings";
+import "fmt";
 
 func GetCourses() []models.Course {
 	dbConnection := services.ConnectToDB();
@@ -23,7 +24,8 @@ func GetCourses() []models.Course {
 		err := results.Scan(
 			&course.ID,
 			&course.Name,
-			&course.Description);
+			&course.Description,
+			&course.Credits);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
@@ -32,6 +34,35 @@ func GetCourses() []models.Course {
 	}
 
 	return courses;
+}
+
+func GetCourseByID(courseID string) models.Course {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	
+	query := settings.GET_COURSES_QUERY + " WHERE id = '" + courseID + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		var course models.Course;
+
+		err := results.Scan(
+			&course.ID,
+			&course.Name,
+			&course.Description,
+			&course.Credits);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+		fmt.Println(course);
+		return course;
+	}
+	return models.Course{};
 }
 
 func GetDepartments() []models.Department {
@@ -205,7 +236,6 @@ func GetSemesters () []models.Semester {
 		var semester models.Semester;
 
 		err := results.Scan(
-			&semester.ID,
 			&semester.Name,
 			&semester.StartDate,
 			&semester.EndDate);
@@ -235,12 +265,13 @@ func GetTaughtCourses() []models.TaughtCourse {
 		var taughtCourse models.TaughtCourse;
 
 		err := results.Scan(
-			&taughtCourse.ID,
 			&taughtCourse.CourseID,
-			&taughtCourse.SemesterID,
+			&taughtCourse.SemesterName,
 			&taughtCourse.ProfessorEmail,
 			&taughtCourse.MaxStudents,
-			&taughtCourse.Location);
+			&taughtCourse.Location,
+			&taughtCourse.StartTime,
+			&taughtCourse.EndTime);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
@@ -280,33 +311,4 @@ func GetRegistrations() []models.Registration {
 	}
 
 	return registrations;
-}
-
-func GetCourseSchedules() []models.CourseSchedule {
-	dbConnection := services.ConnectToDB();
-	defer dbConnection.Close();
-	courseSchedules := []models.CourseSchedule{};
-
-	results, err := dbConnection.Query(settings.GET_COURSE_SCHEDULES_QUERY);
-	defer results.Close();
-	if (err != nil) {
-		panic("Error getting data: " + err.Error());
-	}
-
-	for results.Next() {
-		var courseSchedule models.CourseSchedule;
-
-		err := results.Scan(
-			&courseSchedule.ID,
-			&courseSchedule.TaughtCourseID,
-			&courseSchedule.StartTime,
-			&courseSchedule.EndTime);
-		if (err != nil) {
-			panic("Error scanning row: " + err.Error());
-		}
-
-		courseSchedules = append(courseSchedules, courseSchedule);
-	}
-
-	return courseSchedules;
 }
