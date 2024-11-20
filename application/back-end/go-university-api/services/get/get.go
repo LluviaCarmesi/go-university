@@ -4,7 +4,6 @@ import "back-end/models";
 //import "github.com/go-sql-driver/mysql";
 import "back-end/services";
 import "back-end/settings";
-import "fmt";
 
 func GetCourses() []models.Course {
 	dbConnection := services.ConnectToDB();
@@ -39,7 +38,8 @@ func GetCourses() []models.Course {
 func GetCourseByID(courseID string) models.Course {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
-	
+	course := models.Course{};
+
 	query := settings.GET_COURSES_QUERY + " WHERE id = '" + courseID + "'";
 	results, err := dbConnection.Query(query);
 	defer results.Close();
@@ -49,8 +49,6 @@ func GetCourseByID(courseID string) models.Course {
 	}
 
 	for results.Next() {
-		var course models.Course;
-
 		err := results.Scan(
 			&course.ID,
 			&course.Name,
@@ -59,10 +57,8 @@ func GetCourseByID(courseID string) models.Course {
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
-		fmt.Println(course);
-		return course;
 	}
-	return models.Course{};
+	return course;
 }
 
 func GetDepartments() []models.Department {
@@ -153,6 +149,36 @@ func GetUsers() []models.User {
 	}
 
 	return users;
+}
+
+func GetUserByToken(token string) models.User{
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	user := models.User{};
+	
+	query := settings.GET_USERS_QUERY + " WHERE token = '" + token + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+
+		err := results.Scan(
+			&user.Email,
+			&user.EmailAlias,
+			&user.FirstName,
+			&user.LastName,
+			&user.PhoneNumber,
+			&user.HomeAddress,
+			&user.Role);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	return user;
 }
 
 func GetStudents() []models.User {

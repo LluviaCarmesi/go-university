@@ -65,11 +65,6 @@
             <span class="error">{errorMessage}</span>
         </div>
     {/if}
-    {#if isSuccessful}
-        <div>
-            <span class="success">Course was added sucessfully!</span>
-        </div>
-    {/if}
     <TextField
         fieldLabel="Course ID"
         currentValue={course.ID}

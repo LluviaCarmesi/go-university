@@ -4,8 +4,10 @@ import "back-end/models";
 //import "github.com/go-sql-driver/mysql";
 import "back-end/settings";
 import "back-end/services";
+import "math/rand";
 import "log";
 import "context";
+import "time";
 
 func EditCourse(course models.Course) models.ServiceResponse {
 	serviceResponse := models.ServiceResponse{
@@ -54,4 +56,64 @@ func EditDepartment(department models.Department) models.ServiceResponse {
 	log.Printf("updated department for the following id: %d", department.ID);
 
 	return serviceResponse;
+}
+
+func LoginUser(user models.User) models.ServiceResponseLogin {
+	rand.Seed(time.Now().UnixNano());
+	serviceResponseLogin := models.ServiceResponseLogin{
+		IsSuccessful: true,
+		ErrorMessage: "",
+		Token: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	encryptedPassword := user.Password;
+	receivedUser := models.User{};
+	
+	query := settings.GET_USERS_QUERY + " WHERE email = '" + user.Email + "' AND password = '" + encryptedPassword + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+
+		err := results.Scan(
+			&receivedUser.Email,
+			&receivedUser.EmailAlias,
+			&receivedUser.FirstName,
+			&receivedUser.LastName,
+			&receivedUser.PhoneNumber,
+			&receivedUser.HomeAddress,
+			&receivedUser.Role);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	if (receivedUser.Email == "") {
+		panic("No user found");
+	}
+
+	newToken := make([]byte, 255);
+	for i := 0; i < 255; i++ {
+		newToken[i] = settings.ALPHABET[rand.Intn(len(settings.ALPHABET))];
+	}
+
+	query = settings.UPDATE_USER_TOKEN_QUERY;
+	_, err = dbConnection.ExecContext(
+		context.Background(),
+		query,
+		string(newToken),
+		user.Email);
+	if err != nil {
+		serviceResponseLogin.IsSuccessful = false;
+		serviceResponseLogin.ErrorMessage = "Unable to login: " + err.Error();
+		return serviceResponseLogin;
+	}
+	serviceResponseLogin.Token = string(newToken);
+	log.Printf("updated user for the following id: %d", user.Email);
+
+	return serviceResponseLogin;
 }

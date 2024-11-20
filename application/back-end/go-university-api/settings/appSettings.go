@@ -9,6 +9,8 @@ const APPOINTMENTS_PATH = API_ROOT + "appointments/";
 const SEMESTERS_PATH = API_ROOT + "semesters/";
 const TAUGHT_COURSES_PATH = API_ROOT + "taught_courses/";
 const REGISTRATIONS_PATH = API_ROOT + "registrations/";
+const USERS_LOGIN_PATH = USERS_PATH + "login/";
+const USERS_BY_TOKEN_PATH = USERS_PATH + "by_token/";
 
 // Queries
 const GET_COURSES_QUERY =
@@ -32,6 +34,8 @@ const UPDATE_USER_INFORMATION_QUERY =
 	"home_address = ?, must_change_pw = ? WHERE email = ?";
 const UPDATE_USER_PASSWORD_QUERY =
 	"UPDATE users SET password = ? WHERE email = ?";
+const UPDATE_USER_TOKEN_QUERY =
+	"UPDATE users SET token = ? WHERE email = ?";
 const DELETE_USER_QUERY =
 	"DELETE FROM users WHERE email = ?";
 const GET_STUDENTS_QUERY =
@@ -85,3 +89,6 @@ const GET_PROFESSORS_IN_DEPARTMENTS_QUERY =
 const INSERT_PROFESSOR_IN_DEPARTMENT_QUERY =
 	"INSERT INTO professors_in_departments (professor_email,department_id,is_leader) " +
 	"VALUES (?, ?, ?)";
+
+// Strings
+const ALPHABET = "abcdefghijlmnopqrstuvwxyzABCDEFGHIJLMNOPQRSTUVWXYZ";

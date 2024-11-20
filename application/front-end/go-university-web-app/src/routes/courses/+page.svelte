@@ -2,12 +2,21 @@
     import Navigation from "../../components/Navigation.svelte";
     import type IRole from "../../interfaces/IRole";
     import "../../styles/pages/courses/courses.css";
+    import checkCurrentUser from "../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 </script>
 
 <Navigation {role} />

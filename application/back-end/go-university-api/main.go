@@ -56,10 +56,10 @@ func courses(w http.ResponseWriter, r *http.Request) {
 			break;
 		case http.MethodDelete:
 			pathParts := strings.Split(r.URL.Path, "/")
-			if len(pathParts) < 3 {
+			if len(pathParts) < 4 {
 				panic("Need ID in path");
 			}
-			courseID := pathParts[2];
+			courseID := pathParts[3];
 			if (courseID == "") {
 
 			}
@@ -72,11 +72,61 @@ func courses(w http.ResponseWriter, r *http.Request) {
 }
 
 func getStudents(w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
 	json.NewEncoder(w).Encode(get.GetStudents());
 }
 
 func getUsers(w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
 	json.NewEncoder(w).Encode(get.GetUsers());
+}
+
+func loginUser(w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
+	switch (r.Method) {
+		case http.MethodPatch:
+			var user models.User;
+	
+			err := json.NewDecoder(r.Body).Decode(&user);
+			if (err != nil) {
+				panic("User not structured properly: " + err.Error());
+			}
+			pathParts := strings.Split(r.URL.Path, "/");
+			if len(pathParts) < 5 {
+				panic("Need Email in path");
+			}
+			userEmail := pathParts[4];
+			if (userEmail == "") {
+				return;
+			}
+			user.Email = userEmail;
+			patchResponse := patch.LoginUser(user);
+			json.NewEncoder(w).Encode(patchResponse);
+			break;
+		case http.MethodOptions:
+			break;
+		default:
+			panic("Method not supported");
+	}
+}
+
+func getUserByToken(w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
+	switch (r.Method) {
+		case http.MethodGet:
+			pathParts := strings.Split(r.URL.Path, "/");
+			if len(pathParts) < 5 {
+				panic("Need Token in path");
+			}
+			token := pathParts[4];
+			if (token == "") {
+				return;
+			}
+			json.NewEncoder(w).Encode(get.GetUserByToken(token));
+			break;
+		default:
+			panic("Method not supported");
+	}
 }
 
 func getAppointments(w http.ResponseWriter, r *http.Request) {
@@ -103,6 +153,8 @@ func main() {
 	http.HandleFunc(settings.SEMESTERS_PATH, getSemesters);
 	http.HandleFunc(settings.TAUGHT_COURSES_PATH, getTaughtCourses);
 	http.HandleFunc(settings.REGISTRATIONS_PATH, getRegistrations);
+	http.HandleFunc(settings.USERS_BY_TOKEN_PATH, getUserByToken);
+	http.HandleFunc(settings.USERS_LOGIN_PATH, loginUser);
 
 	log.Fatal(http.ListenAndServe(":8080", nil));
 }
