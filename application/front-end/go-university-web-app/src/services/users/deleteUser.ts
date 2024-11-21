@@ -1,11 +1,11 @@
-import { APPOINTMENTS_API_URI } from "../../appSettings";
-import type IAppointment from "../../interfaces/IAppointment";
+import { USERS_API_URI } from "../../appSettings";
+import type IUser from "../../interfaces/IUser";
 import isStatusGood from "../../utilities/isStatusGood";
 
-export default async function deleteAppointment(item: IAppointment) {
+export default async function deleteAppointment(item: IUser) {
     let doesErrorExist = false;
     let errorMessage = "";
-    await fetch(`${APPOINTMENTS_API_URI}${item.ID}`, {
+    await fetch(`${USERS_API_URI}${item.Email}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json"

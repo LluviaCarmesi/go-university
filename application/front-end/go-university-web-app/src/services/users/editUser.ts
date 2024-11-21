@@ -1,23 +1,16 @@
-import { APPOINTMENTS_API_URI } from "../../appSettings";
-import type IAppointment from "../../interfaces/IAppointment";
+import { USERS_API_URI } from "../../appSettings";
+import type IUser from "../../interfaces/IUser";
 import isStatusGood from "../../utilities/isStatusGood";
 
-export default async function editAppointment(item: IAppointment) {
+export default async function editAppointment(item: IUser) {
     let doesErrorExist = false;
     let errorMessage = "";
-    await fetch(`${APPOINTMENTS_API_URI}${item.ID}`, {
+    await fetch(`${USERS_API_URI}${item.Email}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            ID: item.ID,
-            StudentEmail: item.StudentEmail,
-            AdminEmail: item.AdminEmail,
-            IsComplete: item.IsComplete,
-            StartTime: item.StartTime,
-            EndTime: item.EndTime
-        })
+        body: JSON.stringify(item)
     })
         .then((response) => {
             doesErrorExist = !isStatusGood(response.status);

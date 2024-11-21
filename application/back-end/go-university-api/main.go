@@ -2,6 +2,7 @@ package main;
 import "back-end/services/get";
 import "back-end/services/post";
 import "back-end/services/patch";
+import "back-end/services/delete";
 import "net/http";
 import "log";
 import "back-end/settings";
@@ -56,14 +57,16 @@ func courses(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(patchResponse);
 			break;
 		case http.MethodDelete:
-			pathParts := strings.Split(r.URL.Path, "/")
+			pathParts := strings.Split(r.URL.Path, "/");
 			if len(pathParts) < 4 {
 				panic("Need ID in path");
 			}
 			courseID := pathParts[3];
 			if (courseID == "") {
-
+				panic("Need ID in path");
 			}
+			deleteResponse := delete.DeleteCourse(courseID);
+			json.NewEncoder(w).Encode(deleteResponse);
 			break;
 		case http.MethodOptions:
 			break;
@@ -77,9 +80,62 @@ func getStudents(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(get.GetStudents());
 }
 
-func getUsers(w http.ResponseWriter, r *http.Request) {
+func users(w http.ResponseWriter, r *http.Request) {
 	enableSettings(&w);
-	json.NewEncoder(w).Encode(get.GetUsers());
+	switch (r.Method) {
+		case http.MethodGet:
+			pathParts := strings.Split(r.URL.Path, "/");
+			email := pathParts[3];
+			if (email == "") {
+				json.NewEncoder(w).Encode(get.GetUsers());
+				return;
+			}
+			json.NewEncoder(w).Encode(get.GetUserByEmail(email));
+			break;
+		case http.MethodPost:
+			var user models.User;
+			err := json.NewDecoder(r.Body).Decode(&user);
+			if (err != nil) {
+				panic("User not structured properly: " + err.Error());
+			}
+			postResponse := post.AddUser(user);
+			json.NewEncoder(w).Encode(postResponse);
+			break;
+		case http.MethodPatch:
+			pathParts := strings.Split(r.URL.Path, "/");
+			if len(pathParts) < 4 {
+				panic("Need Email in path");
+			}
+			email := pathParts[3];
+			if (email == "") {
+				panic("Need Email in path");
+			}
+			var user models.User;
+			err := json.NewDecoder(r.Body).Decode(&user);
+			if (err != nil) {
+				panic("User not structured properly: " + err.Error());
+			}
+			user.Email = email;
+			patchResponse := patch.EditUser(user);
+			json.NewEncoder(w).Encode(patchResponse);
+			break;
+		case http.MethodDelete:
+			pathParts := strings.Split(r.URL.Path, "/");
+			if len(pathParts) < 4 {
+				panic("Need Email in path");
+			}
+			email := pathParts[3];
+			if (email == "") {
+				panic("Need Email in path");
+			}
+			deleteResponse := delete.DeleteUser(email);
+			json.NewEncoder(w).Encode(deleteResponse);
+			break;
+		case http.MethodOptions:
+			break;
+		default:
+			panic("Method not supported");
+	}
 }
 
 func loginUser(w http.ResponseWriter, r *http.Request) {
@@ -180,8 +236,14 @@ func appointments(w http.ResponseWriter, r *http.Request) {
 			}
 			appointmentID := pathParts[3];
 			if (appointmentID == "") {
-
+				panic("Need ID in path");
 			}
+			appointmentIDInt, err := strconv.Atoi(appointmentID);
+			if err != nil {
+				panic("appointmentID is not an int");
+			}
+			deleteResponse := delete.DeleteAppointment(appointmentIDInt);
+			json.NewEncoder(w).Encode(deleteResponse);
 			break;
 		case http.MethodOptions:
 			break;
@@ -205,7 +267,7 @@ func getRegistrations (w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc(settings.STUDENTS_PATH, getStudents);
 	http.HandleFunc(settings.COURSES_PATH, courses);
-	http.HandleFunc(settings.USERS_PATH, getUsers);
+	http.HandleFunc(settings.USERS_PATH, users);
 	http.HandleFunc(settings.APPOINTMENTS_PATH, appointments);
 	http.HandleFunc(settings.SEMESTERS_PATH, getSemesters);
 	http.HandleFunc(settings.TAUGHT_COURSES_PATH, getTaughtCourses);

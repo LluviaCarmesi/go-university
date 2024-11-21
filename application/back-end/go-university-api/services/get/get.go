@@ -181,6 +181,36 @@ func GetUserByToken(token string) models.User{
 	return user;
 }
 
+func GetUserByEmail(email string) models.User{
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	user := models.User{};
+	
+	query := settings.GET_USERS_QUERY + " WHERE email_alias = '" + email + "' OR email = '" + email + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+
+		err := results.Scan(
+			&user.Email,
+			&user.EmailAlias,
+			&user.FirstName,
+			&user.LastName,
+			&user.PhoneNumber,
+			&user.HomeAddress,
+			&user.Role);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	return user;
+}
+
 func GetStudents() []models.User {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();

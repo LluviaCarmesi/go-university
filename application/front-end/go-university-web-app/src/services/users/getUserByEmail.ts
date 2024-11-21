@@ -1,7 +1,7 @@
-import * as SETTINGS from "../../appSettings";
 import isStatusGood from "../../utilities/isStatusGood";
 import * as strings from "../../strings/ENUSStrings";
 import type IUser from "../../interfaces/IUser";
+import { USERS_API_URI } from "../../appSettings";
 
 export default async function getUserByEmail(email: string) {
     const returnedResponse: {
@@ -25,7 +25,7 @@ export default async function getUserByEmail(email: string) {
         errorMessage: ""
     }
 
-    await fetch(`${SETTINGS.USERS_API_URI}${email}`)
+    await fetch(`${USERS_API_URI}${email}`)
         .then((response) => {
             returnedResponse.isSuccessful = isStatusGood(response.status);
             return response.json();
