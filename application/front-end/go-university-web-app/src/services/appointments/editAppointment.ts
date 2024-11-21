@@ -10,14 +10,7 @@ export default async function editAppointment(item: IAppointment) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            ID: item.ID,
-            StudentEmail: item.StudentEmail,
-            AdminEmail: item.AdminEmail,
-            IsComplete: item.IsComplete,
-            StartTime: item.StartTime,
-            EndTime: item.EndTime
-        })
+        body: JSON.stringify(item)
     })
         .then((response) => {
             doesErrorExist = !isStatusGood(response.status);

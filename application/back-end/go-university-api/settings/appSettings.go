@@ -84,11 +84,15 @@ const INSERT_DEPARTMENT_QUERY =
 	"INSERT INTO departments (name) VALUES (?)";
 const UPDATE_DEPARTMENT_QUERY =
 	"UPDATE departments SET name = ? WHERE id = ?";
+const DELETE_DEPARTMENT_QUERY =
+	"DELETE FROM departments WHERE id = ?";
 const GET_PROFESSORS_IN_DEPARTMENTS_QUERY =
 	"SELECT professor_email,department_id,is_leader FROM professors_in_departments";
 const INSERT_PROFESSOR_IN_DEPARTMENT_QUERY =
 	"INSERT INTO professors_in_departments (professor_email,department_id,is_leader) " +
 	"VALUES (?, ?, ?)";
+const DELETE_PROFESSOR_IN_DEPARTMENT_QUERY =
+	"DELETE FROM professors_in_departments WHERE professor_email = ? AND department_id = ?";
 
 // Strings
 const ALPHABET = "abcdefghijlmnopqrstuvwxyzABCDEFGHIJLMNOPQRSTUVWXYZ";

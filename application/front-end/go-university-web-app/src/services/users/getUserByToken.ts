@@ -1,7 +1,7 @@
-import * as SETTINGS from "../../appSettings";
 import isStatusGood from "../../utilities/isStatusGood";
 import * as strings from "../../strings/ENUSStrings";
 import type IUser from "../../interfaces/IUser";
+import { USERS_BY_TOKEN_API_URI } from "../../appSettings";
 
 export default async function getUserByToken(token: string) {
     const returnedResponse: {
@@ -25,7 +25,7 @@ export default async function getUserByToken(token: string) {
         errorMessage: ""
     }
 
-    await fetch(`${SETTINGS.USERS_BY_TOKEN_API_URI}${token}`)
+    await fetch(`${USERS_BY_TOKEN_API_URI}${token}`)
         .then((response) => {
             returnedResponse.isSuccessful = isStatusGood(response.status);
             return response.json();

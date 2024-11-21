@@ -4,6 +4,7 @@ import "back-end/models";
 //import "github.com/go-sql-driver/mysql";
 import "back-end/settings";
 import "back-end/services";
+import "back-end/services/get";
 import "math/rand";
 import "log";
 import "context";
@@ -53,7 +54,7 @@ func EditDepartment(department models.Department) models.ServiceResponse {
 		serviceResponse.ErrorMessage = "Unable to update department: " + err.Error();
 		return serviceResponse;
 	}
-	log.Printf("updated department for the following id: %d", department.ID);
+	log.Printf("updated departments for the following id: %d", department.ID);
 
 	return serviceResponse;
 }
@@ -81,7 +82,7 @@ func EditAppointment(appointment models.Appointment) models.ServiceResponse {
 		serviceResponse.ErrorMessage = "Unable to update appointment: " + err.Error();
 		return serviceResponse;
 	}
-	log.Printf("updated appointment for the following id: %d", appointment.ID);
+	log.Printf("updated appointments for the following id: %d", appointment.ID);
 
 	return serviceResponse;
 }
@@ -141,7 +142,46 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 		return serviceResponseLogin;
 	}
 	serviceResponseLogin.Token = string(newToken);
-	log.Printf("updated user for the following id: %d", user.Email);
+	log.Printf("updated users for the following id: %d", user.Email);
 
 	return serviceResponseLogin;
+}
+
+func EditUser(user models.User) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	recievedUserWithEmailAlias := get.GetUserByEmail(user.EmailAlias);
+	if (recievedUserWithEmailAlias.Email == "") {
+		recievedUserWithEmail := get.GetUserByEmail(user.Email);
+		if (recievedUserWithEmail.Email != user.Email) {
+			panic("Someone else has same email");
+		}
+	} else if (recievedUserWithEmailAlias.Email != user.Email) {
+		panic("Someone else has same email alias");
+	}
+
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.UPDATE_USER_INFORMATION_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		user.EmailAlias,
+		user.FirstName,
+		user.LastName,
+		user.PhoneNumber,
+		user.HomeAddress,
+		user.MustChangePW,
+		user.Email);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to update user: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf("updated users for the following email: %d", user.Email);
+
+	return serviceResponse;
 }
