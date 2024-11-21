@@ -5,7 +5,6 @@
     import type IRole from "../../interfaces/IRole";
     import loginUser from "../../services/users/loginUser";
     import "../../styles/common.css";
-    import setCookie from "../../utilities/setCookie";
 
     let role: IRole = {
         isAdmin: true,
@@ -33,7 +32,6 @@
         if (!isSuccessful) {
             errorMessage = submitLoginResponse.errorMessage;
         } else {
-            setCookie("token", submitLoginResponse.token, 30);
             errorMessage = "";
         }
         isLoading = false;

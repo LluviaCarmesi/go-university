@@ -8,6 +8,7 @@ import "back-end/settings";
 import "encoding/json";
 import "back-end/models";
 import "strings";
+import "strconv";
 
 func enableSettings(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Headers", "*");
@@ -129,8 +130,64 @@ func getUserByToken(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAppointments(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(get.GetAppointments());
+func appointments(w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
+	switch (r.Method) {
+		case http.MethodGet:
+			pathParts := strings.Split(r.URL.Path, "/");
+			appointmentID := pathParts[3];
+			if (appointmentID == "") {
+				json.NewEncoder(w).Encode(get.GetAppointments());
+				return;
+			}
+			json.NewEncoder(w).Encode(get.GetAppointmentByID(appointmentID));
+			break;
+		case http.MethodPost:
+			var appointment models.Appointment;
+			err := json.NewDecoder(r.Body).Decode(&appointment);
+			if (err != nil) {
+				panic("Appointment not structured properly: " + err.Error());
+			}
+			postResponse := post.AddAppointment(appointment);
+			json.NewEncoder(w).Encode(postResponse);
+			break;
+		case http.MethodPatch:
+			pathParts := strings.Split(r.URL.Path, "/");
+			if len(pathParts) < 4 {
+				panic("Need ID in path");
+			}
+			appointmentID := pathParts[3];
+			if (appointmentID == "") {
+				panic("Need ID in path");
+			}
+			var appointment models.Appointment;
+			err := json.NewDecoder(r.Body).Decode(&appointment);
+			if (err != nil) {
+				panic("Appointment not structured properly: " + err.Error());
+			}
+			appointmentIDInt, err := strconv.Atoi(appointmentID);
+			if err != nil {
+				panic("appointmentID is not an int");
+			}
+			appointment.ID = appointmentIDInt;
+			patchResponse := patch.EditAppointment(appointment);
+			json.NewEncoder(w).Encode(patchResponse);
+			break;
+		case http.MethodDelete:
+			pathParts := strings.Split(r.URL.Path, "/")
+			if len(pathParts) < 4 {
+				panic("Need ID in path");
+			}
+			appointmentID := pathParts[3];
+			if (appointmentID == "") {
+
+			}
+			break;
+		case http.MethodOptions:
+			break;
+		default:
+			panic("Method not supported");
+	}
 }
 
 func getSemesters (w http.ResponseWriter, r *http.Request) {
@@ -149,7 +206,7 @@ func main() {
 	http.HandleFunc(settings.STUDENTS_PATH, getStudents);
 	http.HandleFunc(settings.COURSES_PATH, courses);
 	http.HandleFunc(settings.USERS_PATH, getUsers);
-	http.HandleFunc(settings.APPOINTMENTS_PATH, getAppointments);
+	http.HandleFunc(settings.APPOINTMENTS_PATH, appointments);
 	http.HandleFunc(settings.SEMESTERS_PATH, getSemesters);
 	http.HandleFunc(settings.TAUGHT_COURSES_PATH, getTaughtCourses);
 	http.HandleFunc(settings.REGISTRATIONS_PATH, getRegistrations);

@@ -246,6 +246,34 @@ func GetAppointments () []models.Appointment {
 	return appointments;
 }
 
+func GetAppointmentByID(appointmentID string) models.Appointment {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	appointment := models.Appointment{};
+
+	query := settings.GET_APPOINTMENTS_QUERY + " WHERE id = '" + appointmentID + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		err := results.Scan(
+			&appointment.ID,
+			&appointment.StudentEmail,
+			&appointment.AdminEmail,
+			&appointment.IsComplete,
+			&appointment.StartTime,
+			&appointment.EndTime);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	return appointment;
+}
+
 func GetSemesters () []models.Semester {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();

@@ -4,7 +4,7 @@
     import addCourse from "../../../services/courses/addCourse";
     import TextField from "../../../components/TextField.svelte";
     import type IRole from "../../../interfaces/IRole";
-    import "../../../styles/pages/courses/courses.css";
+    import "../../../styles/items.css";
     import "../../../styles/common.css";
 
     let role: IRole = {
@@ -43,7 +43,7 @@
 
 <Navigation {role} />
 
-<div id="courseForm">
+<div id="itemForm">
     <div class="mainHeadingContainer">
         <h2>Add a Course</h2>
     </div>

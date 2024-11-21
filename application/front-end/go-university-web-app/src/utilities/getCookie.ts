@@ -4,13 +4,12 @@ export default function getCookie(property: string) {
     const cookieProperties = decodedCookie.split(';');
 
     for (let i = 0; i < cookieProperties.length; i++) {
-        let c = cookieProperties[i];
-        console.log(c);
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
+        let cookieProperty = cookieProperties[i];
+        while (cookieProperty.charAt(0) == ' ') {
+            cookieProperty = cookieProperty.substring(1);
         }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
+        if (cookieProperty.indexOf(name) == 0) {
+            return cookieProperty.substring(name.length, cookieProperty.length);
         }
     }
     return "";

@@ -1,6 +1,7 @@
 import { USERS_LOGIN_API_URI } from "../../appSettings";
 import type ILogin from "../../interfaces/ILogin";
 import isStatusGood from "../../utilities/isStatusGood";
+import setCookie from "../../utilities/setCookie";
 
 export default async function loginUser(item: ILogin) {
     const returnedResponse: {
@@ -39,7 +40,8 @@ export default async function loginUser(item: ILogin) {
                 returnedResponse.errorMessage = result.response;
             }
             else {
-                returnedResponse.token = result.Token;
+                setCookie("token", result.Token, 30);
+                setCookie("email", item.Email, 30);
             }
         })
         .catch((error) => {

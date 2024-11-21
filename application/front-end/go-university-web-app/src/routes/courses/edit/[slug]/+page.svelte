@@ -5,7 +5,7 @@
     import type IRole from "../../../../interfaces/IRole";
     import getCourseByID from "../../../../services/courses/getCourseByID";
     import editCourse from "../../../../services/courses/editCourse";
-    import "../../../../styles/pages/courses/courses.css";
+    import "../../../../styles/items.css";
     import "../../../../styles/common.css";
     export let data;
 
@@ -56,12 +56,12 @@
 
 <Navigation {role} />
 
-<div id="courseForm">
+<div id="itemForm">
     <div class="mainHeadingContainer">
         <h2>Edit {course.ID} Course</h2>
     </div>
     <div class="descriptionContainer">
-        <span>Edit the course using the form below! </span>
+        <span>Edit the course using the form below!</span>
     </div>
     {#if !!errorMessage}
         <div class="errorContainer">

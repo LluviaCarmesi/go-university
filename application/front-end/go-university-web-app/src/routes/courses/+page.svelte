@@ -1,7 +1,7 @@
 <script lang="ts">
     import Navigation from "../../components/Navigation.svelte";
     import type IRole from "../../interfaces/IRole";
-    import "../../styles/pages/courses/courses.css";
+    import "../../styles/items.css";
     import checkCurrentUser from "../../services/users/checkCurrentUser";
     import { onMount } from "svelte";
 
@@ -21,13 +21,13 @@
 
 <Navigation {role} />
 
-<div id="coursesLinks">
+<div id="itemsLinks">
     {#if role.isAdmin}
         <div>
             <a href="courses/add">Add Course</a>
         </div>
         <div>
-            <a href="courses/show-courses">Edit Courses</a>
+            <a href="courses/show">Edit Courses</a>
         </div>
     {:else if role.isProfessor}
         <div>

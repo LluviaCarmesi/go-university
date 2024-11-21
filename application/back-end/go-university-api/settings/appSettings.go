@@ -46,11 +46,11 @@ const GET_APPOINTMENTS_QUERY =
 	"SELECT id,student_email,admin_email,is_complete,start_time,end_time " +
 	"FROM appointments";
 const INSERT_APPOINTMENT_QUERY =
-	"INSERT INTO appointments (student_email,admin_email,start_time,end_time) " +
-	"VALUES (?, ?, ?, ?)";
+	"INSERT INTO appointments (student_email,admin_email,is_complete,start_time,end_time) " +
+	"VALUES (?, ?, ?, ?, ?)";
 const UPDATE_APPOINTMENT_QUERY =
-	"UPDATE appointments SET student_email = ?, admin_email = ?, start_time = ?, end_time = ?, " +
-	"is_complete = ? WHERE id = ?";
+	"UPDATE appointments SET student_email = ?, admin_email = ?, is_complete = ?, start_time = ?, " +
+	"end_time = ? WHERE id = ?";
 const DELETE_APPOINTMENT_QUERY =
 	"DELETE FROM appointments WHERE id = ?";
 const GET_SEMESTERS_QUERY =

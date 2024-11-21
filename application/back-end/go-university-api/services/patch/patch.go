@@ -58,6 +58,34 @@ func EditDepartment(department models.Department) models.ServiceResponse {
 	return serviceResponse;
 }
 
+func EditAppointment(appointment models.Appointment) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.UPDATE_APPOINTMENT_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		appointment.StudentEmail,
+		appointment.AdminEmail,
+		appointment.IsComplete,
+		appointment.StartTime,
+		appointment.EndTime,
+		appointment.ID);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to update appointment: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf("updated appointment for the following id: %d", appointment.ID);
+
+	return serviceResponse;
+}
+
 func LoginUser(user models.User) models.ServiceResponseLogin {
 	rand.Seed(time.Now().UnixNano());
 	serviceResponseLogin := models.ServiceResponseLogin{
