@@ -1,5 +1,5 @@
 <script>
-    import "../styles/components/dropdownField.css";
+    import "../styles/components/dropdown.css";
     export let inputID;
     export let fieldLabel;
     export let onDropdownChange;

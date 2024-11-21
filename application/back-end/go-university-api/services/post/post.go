@@ -138,13 +138,14 @@ func AddAppointment(appointment models.Appointment) models.ServiceResponse {
 	}
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
-	
+
 	query := settings.INSERT_APPOINTMENT_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
 		appointment.StudentEmail,
 		appointment.AdminEmail,
+		appointment.IsComplete,
 		appointment.StartTime,
 		appointment.EndTime);
 	if err != nil {

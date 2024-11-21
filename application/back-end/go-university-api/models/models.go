@@ -30,6 +30,7 @@ type User struct {
 	HomeAddress string `json:home_address`
 	Role string `json:role`
 	MustChangePW bool `json:must_change_pw`
+	Token string `json:token`
 }
 
 type Appointment struct {
@@ -68,4 +69,10 @@ type Registration struct {
 type ServiceResponse struct {
 	IsSuccessful bool `json:is_successful`
 	ErrorMessage string `json:error_message`
+}
+
+type ServiceResponseLogin struct {
+	IsSuccessful bool `json:is_successful`
+	ErrorMessage string `json:error_message`
+	Token string `json:token`
 }

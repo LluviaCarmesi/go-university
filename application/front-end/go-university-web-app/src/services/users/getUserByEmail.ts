@@ -1,25 +1,31 @@
 import * as SETTINGS from "../../appSettings";
 import isStatusGood from "../../utilities/isStatusGood";
 import * as strings from "../../strings/ENUSStrings";
-import type ICourse from "../../interfaces/ICourse";
+import type IUser from "../../interfaces/IUser";
 
 export default async function getUserByEmail(email: string) {
     const returnedResponse: {
-        course: ICourse,
+        user: IUser,
         isSuccessful: boolean,
         errorMessage: string
     } = {
-        course: {
-            ID: "",
-            Name: "",
-            Description: "",
-            Credits: ""
+        user: {
+            Email: "",
+            EmailAlias: "",
+            Password: "",
+            FirstName: "",
+            LastName: "",
+            PhoneNumber: "",
+            HomeAddress: "",
+            Role: "",
+            Token: "",
+            MustChangePW: false
         },
         isSuccessful: false,
         errorMessage: ""
     }
 
-    await fetch(`${SETTINGS.COURSES_API_URI}${id}`)
+    await fetch(`${SETTINGS.USERS_API_URI}${email}`)
         .then((response) => {
             returnedResponse.isSuccessful = isStatusGood(response.status);
             return response.json();
@@ -29,15 +35,15 @@ export default async function getUserByEmail(email: string) {
                 returnedResponse.errorMessage = result.response;
             }
             else {
-                returnedResponse.course = result;
+                returnedResponse.user = result;
             }
         })
         .catch((error) => {
             returnedResponse.errorMessage = error;
             console.log(error);
         });
-    if (!returnedResponse.course.ID) {
-        returnedResponse.errorMessage = strings.COURSE_DOESNT_EXIST_ERROR_MESSAGE;
+    if (!returnedResponse.user.Email) {
+        returnedResponse.errorMessage = strings.USER_DOESNT_EXIST_ERROR_MESSAGE;
     }
     return returnedResponse;
 }
