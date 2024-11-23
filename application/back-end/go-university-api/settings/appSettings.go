@@ -27,8 +27,8 @@ const GET_USERS_QUERY =
 	"FROM users";
 const INSERT_USER_QUERY = 
 	"INSERT INTO users (email,email_alias,password,first_name,last_name,phone_number," +
-	"home_address,role) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	"home_address,role,must_change_pw) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 const UPDATE_USER_INFORMATION_QUERY =
 	"UPDATE users SET email_alias = ?, first_name = ?, last_name = ?, phone_number = ?, " +
 	"home_address = ?, must_change_pw = ? WHERE email = ?";
@@ -38,10 +38,6 @@ const UPDATE_USER_TOKEN_QUERY =
 	"UPDATE users SET token = ? WHERE email = ?";
 const DELETE_USER_QUERY =
 	"DELETE FROM users WHERE email = ?";
-const GET_STUDENTS_QUERY =
-	"SELECT email,email_alias,first_name,last_name,phone_number,home_address,role " +
-	"FROM users " + 
-	"WHERE role = 'student'";
 const GET_APPOINTMENTS_QUERY =
 	"SELECT id,student_email,admin_email,is_complete,start_time,end_time " +
 	"FROM appointments";
@@ -54,14 +50,14 @@ const UPDATE_APPOINTMENT_QUERY =
 const DELETE_APPOINTMENT_QUERY =
 	"DELETE FROM appointments WHERE id = ?";
 const GET_SEMESTERS_QUERY =
-	"SELECT id,name,start_date,end_date " +
+	"SELECT name,start_date,end_date " +
 	"FROM semesters";
 const INSERT_SEMESTER_QUERY = 
 	"INSERT INTO semesters (name,start_date,end_date) VALUES (?, ?, ?)";
 const UPDATE_SEMESTER_QUERY =
-	"UPDATE semesters SET name = ?, start_date = ?, end_date = ? WHERE id = ?";
+	"UPDATE semesters SET start_date = ?, end_date = ? WHERE name = ?";
 const DELETE_SEMESTER_QUERY =
-	"DELETE FROM semesters WHERE id = ?";
+	"DELETE FROM semesters WHERE name = ?";
 const GET_TAUGHT_COURSES_QUERY = 
 	"SELECT id,course_id,semester_id,professor_email,max_students,location,start_time,end_time" +
 	"FROM taught_courses";

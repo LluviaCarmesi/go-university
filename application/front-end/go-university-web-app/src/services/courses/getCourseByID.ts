@@ -1,7 +1,7 @@
-import * as SETTINGS from "../../appSettings";
 import isStatusGood from "../../utilities/isStatusGood";
 import * as strings from "../../strings/ENUSStrings";
 import type ICourse from "../../interfaces/ICourse";
+import { COURSES_API_URI } from "../../appSettings";
 
 export default async function getCourseByID(id: string) {
     const returnedResponse: {
@@ -19,7 +19,7 @@ export default async function getCourseByID(id: string) {
         errorMessage: ""
     }
 
-    await fetch(`${SETTINGS.COURSES_API_URI}${id}`)
+    await fetch(`${COURSES_API_URI}${id}`)
         .then((response) => {
             returnedResponse.isSuccessful = isStatusGood(response.status);
             return response.json();

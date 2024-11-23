@@ -1,11 +1,10 @@
 <script lang="ts">
     import Navigation from "../../../components/Navigation.svelte";
-    import type IAppointment from "../../../interfaces/IAppointment";
     import type IRole from "../../../interfaces/IRole";
-    import getAppointments from "../../../services/appointments/getAppointments";
     import "../../../styles/items.css";
     import "../../../styles/common.css";
-    import formatDateTime from "../../../utilities/formatDateTime";
+    import getUsers from "../../../services/users/getUsers";
+    import type IUser from "../../../interfaces/IUser";
 
     let role: IRole = {
         isAdmin: true,
@@ -15,71 +14,69 @@
     let isLoading = false;
     let errorMessage = "";
 
-    let appointments: IAppointment[] = [];
+    let users: IUser[] = [];
 
-    async function getAppointmentsResponse() {
-        const appointmentsResponse = await getAppointments();
-        if (appointmentsResponse.isSuccessful) {
-            appointments = appointmentsResponse.appointments;
+    async function getUsersResponse() {
+        const usersResponse = await getUsers();
+        if (usersResponse.isSuccessful) {
+            users = usersResponse.users;
         } else {
-            errorMessage = appointmentsResponse.errorMessage;
+            errorMessage = usersResponse.errorMessage;
         }
         isLoading = false;
     }
-    getAppointmentsResponse();
+    getUsersResponse();
 </script>
 
 <Navigation {role} />
 
 <div id="itemsTable">
-    {#if appointments.length === 0}
+    {#if users.length === 0}
         <div class="descriptionContainer">
-            <span>No appointments as of now!</span>
+            <span>No users as of now!</span>
         </div>
     {:else}
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Student Email</th>
-                    <th>Admin Email</th>
-                    <th>Is Complete</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
+                    <th>Email</th>
+                    <th>Email Alias</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone Number</th>
+                    <th>Home Address</th>
+                    <th>Role</th>
+                    <th>Must Change Password</th>
                 </tr>
             </thead>
-            {#each appointments as appointment}
+            {#each users as user}
                 <tbody>
                     <tr>
                         <td>
-                            <a href={"edit/" + appointment.ID}>
-                                <span>{appointment.ID}</span>
+                            <a href={"edit/" + user.Email}>
+                                <span>{user.Email}</span>
                             </a>
                         </td>
                         <td>
-                            <span>{appointment.StudentEmail}</span>
+                            <span>{user.EmailAlias}</span>
                         </td>
                         <td>
-                            <span>{appointment.AdminEmail}</span>
+                            <span>{user.FirstName}</span>
                         </td>
                         <td>
-                            <span>{appointment.IsComplete}</span>
+                            <span>{user.LastName}</span>
                         </td>
                         <td>
-                            <span
-                                >{formatDateTime(
-                                    appointment.StartTime,
-                                    true,
-                                )}</span
-                            >
+                            <span>{user.PhoneNumber}</span>
                         </td>
                         <td>
-                            <span
-                                >{formatDateTime(
-                                    appointment.EndTime,
-                                    true,
-                                )}</span
-                            >
+                            <span>{user.HomeAddress}</span>
+                        </td>
+                        <td>
+                            <span>{user.Role}</span>
+                        </td>
+                        <td>
+                            <span>{user.MustChangePW}</span>
                         </td>
                     </tr>
                 </tbody>

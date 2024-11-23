@@ -2,18 +2,13 @@
     import Navigation from "../../../../components/Navigation.svelte";
     import TextField from "../../../../components/TextField.svelte";
     import type IRole from "../../../../interfaces/IRole";
-    import getCourseByID from "../../../../services/courses/getCourseByID";
-    import editCourse from "../../../../services/courses/editCourse";
     import "../../../../styles/items.css";
     import "../../../../styles/common.css";
     import Checkbox from "../../../../components/Checkbox.svelte";
-    import DatePicker from "../../../../components/DatePicker.svelte";
-    import type IAppointment from "../../../../interfaces/IAppointment";
-    import { onMount } from "svelte";
-    import getCookie from "../../../../utilities/getCookie";
-    import editAppointment from "../../../../services/appointments/editAppointment";
-    import getAppointmentByID from "../../../../services/appointments/getAppointmentByID";
-    import formatDateTime from "../../../../utilities/formatDateTime";
+    import editUser from "../../../../services/users/editUser";
+    import getUserByEmail from "../../../../services/users/getUserByEmail";
+    import Dropdown from "../../../../components/Dropdown.svelte";
+    import { ROLE_OPTIONS } from "../../../../appSettings";
     export let data;
 
     let role: IRole = {
@@ -26,49 +21,49 @@
     let errorMessage = "";
     let isSuccessful = false;
 
-    const appointmentTextFields: any = {
-        StudentEmail: "",
-        AdminEmail: "",
-        StartTime: "",
-        EndTime: "",
+    const userTextFields: any = {
+        Email: "",
+        EmailAlias: "",
+        Password: "",
+        FirstName: "",
+        LastName: "",
+        PhoneNumber: "",
+        HomeAddress: "",
     };
 
-    const appointmentNumberFields: any = {
-        ID: 0,
+    const userDropdownFields: any = {
+        Role: "",
     };
 
-    const appointmentCheckboxFields: any = {
-        IsComplete: false,
-    };
-
-    const appointmentDateFields: any = {
-        StartTime: new Date(),
-        EndTime: new Date(),
+    const userCheckboxFields: any = {
+        MustChangePW: false,
     };
 
     function handleTextChange(event: any) {
-        appointmentTextFields[event.target.id] = event.target.value;
+        userTextFields[event.target.id] = event.target.value;
+    }
+
+    function handleDropdownChange(event: any) {
+        userDropdownFields[event.target.id] = event.target.value;
     }
 
     function handleCheckboxChange(event: any) {
-        appointmentCheckboxFields[event.target.id] = event.target.checked;
-        console.log(event.target.checked);
+        userCheckboxFields[event.target.id] = event.target.checked;
     }
 
-    function handleDatePickerChange(event: any) {
-        appointmentTextFields[event.target.id] = event.target.value;
-        appointmentDateFields[event.target.id] = new Date(event.target.value);
-    }
-
-    async function submitAppointment() {
+    async function submitUser() {
         isLoading = true;
-        const editCourseResponse = await editAppointment({
-            ID: appointmentNumberFields.ID,
-            StudentEmail: appointmentTextFields.StudentEmail,
-            AdminEmail: appointmentTextFields.AdminEmail,
-            IsComplete: appointmentCheckboxFields.IsComplete,
-            StartTime: appointmentDateFields.StartTime,
-            EndTime: appointmentDateFields.EndTime,
+        const editCourseResponse = await editUser({
+            Email: userTextFields.Email,
+            EmailAlias: userTextFields.EmailAlias,
+            Password: userTextFields.Password,
+            FirstName: userTextFields.FirstName,
+            LastName: userTextFields.LastName,
+            PhoneNumber: userTextFields.PhoneNumber,
+            HomeAddress: userTextFields.HomeAddress,
+            Role: userDropdownFields.Role,
+            Token: "",
+            MustChangePW: userCheckboxFields.MustChangePW,
         });
         isSuccessful = !editCourseResponse.doesErrorExist;
         if (!isSuccessful) {
@@ -79,40 +74,35 @@
         isLoading = false;
     }
 
-    async function getAppointmentByIDResponse() {
-        const appointmentResponse = await getAppointmentByID(data.id);
-        if (appointmentResponse.isSuccessful) {
-            const appointment = appointmentResponse.appointment;
-            appointmentNumberFields.ID = appointment.ID;
-            appointmentTextFields.StudentEmail = appointment.StudentEmail;
-            appointmentTextFields.AdminEmail = appointment.AdminEmail;
-            appointmentCheckboxFields.IsComplete = appointment.IsComplete;
-            appointmentDateFields.StartTime = appointment.StartTime;
-            appointmentTextFields.StartTime = formatDateTime(
-                appointment.StartTime,
-                false,
-            );
-            appointmentDateFields.EndTime = appointment.EndTime;
-            appointmentTextFields.EndTime = formatDateTime(
-                appointment.EndTime,
-                false,
-            );
+    async function getUserByIDResponse() {
+        const userResponse = await getUserByEmail(data.id);
+        if (userResponse.isSuccessful) {
+            const user = userResponse.user;
+            userTextFields.Email = user.Email;
+            userTextFields.EmailAlias = user.EmailAlias;
+            userTextFields.Password = user.Password;
+            userTextFields.FirstName = user.FirstName;
+            userTextFields.LastName = user.LastName;
+            userTextFields.PhoneNumber = user.PhoneNumber;
+            userTextFields.HomeAddress = user.HomeAddress;
+            userDropdownFields.Role = user.Role;
+            userCheckboxFields.MustChangePW = user.MustChangePW;
         } else {
-            errorMessage = appointmentResponse.errorMessage;
+            errorMessage = userResponse.errorMessage;
         }
         isLoading = false;
     }
-    getAppointmentByIDResponse();
+    getUserByIDResponse();
 </script>
 
 <Navigation {role} />
 
 <div id="itemForm">
     <div class="mainHeadingContainer">
-        <h2>Edit the Appointment</h2>
+        <h2>Edit the User</h2>
     </div>
     <div class="descriptionContainer">
-        <span>Edit the appointment using the form below! </span>
+        <span>Edit the user using the form below! </span>
     </div>
     {#if !!errorMessage}
         <div class="errorContainer">
@@ -121,7 +111,7 @@
     {/if}
     {#if isSuccessful}
         <div class="successContainer">
-            <span>Appointment was modified successfully!</span>
+            <span>User was modified successfully!</span>
         </div>
     {/if}
     {#if !!errorMessage}
@@ -130,39 +120,65 @@
         </div>
     {/if}
     <TextField
-        fieldLabel="Student Email"
-        currentValue={appointmentTextFields.StudentEmail}
+        fieldLabel="Email"
+        currentValue={userTextFields.Email}
         onChangeTextField={handleTextChange}
-        inputID="ID"
-        isDisabled={role.isStudent}
+        inputID="Email"
+        isDisabled={true}
     />
     <TextField
-        fieldLabel="Admin Email"
-        currentValue={appointmentTextFields.AdminEmail}
+        fieldLabel="Email Alias"
+        currentValue={userTextFields.EmailAlias}
         onChangeTextField={handleTextChange}
-        inputID="Name"
+        inputID="EmailAlias"
     />
-    <Checkbox
-        fieldLabel="Is Complete"
-        currentValue={appointmentCheckboxFields.IsComplete}
-        onChangeCheckbox={handleCheckboxChange}
-        inputID="IsComplete"
+    <TextField
+        fieldLabel="Password"
+        currentValue={userTextFields.Password}
+        onChangeTextField={handleTextChange}
+        inputID="Password"
         isDisabled={!role.isAdmin}
     />
-    <DatePicker
-        fieldLabel="Start Time"
-        currentValue={appointmentTextFields.StartTime}
-        onChangeDateTimePicker={handleDatePickerChange}
-        inputID="StartTime"
+    <TextField
+        fieldLabel="First Name"
+        currentValue={userTextFields.FirstName}
+        onChangeTextField={handleTextChange}
+        inputID="FirstName"
     />
-    <DatePicker
-        fieldLabel="End Time"
-        currentValue={appointmentTextFields.EndTime}
-        onChangeDateTimePicker={handleDatePickerChange}
-        inputID="EndTime"
+    <TextField
+        fieldLabel="Last Name"
+        currentValue={userTextFields.LastName}
+        onChangeTextField={handleTextChange}
+        inputID="LastName"
+    />
+    <TextField
+        fieldLabel="Phone Number"
+        currentValue={userTextFields.PhoneNumber}
+        onChangeTextField={handleTextChange}
+        inputID="PhoneNumber"
+    />
+    <TextField
+        fieldLabel="Home Address"
+        currentValue={userTextFields.HomeAddress}
+        onChangeTextField={handleTextChange}
+        inputID="HomeAddress"
+        isExpandable={true}
+    />
+    <Dropdown
+        fieldLabel="Role"
+        currentValue={userDropdownFields.Role}
+        onDropdownChange={handleDropdownChange}
+        inputID="Role"
+        dropdownOptions={ROLE_OPTIONS}
+    />
+    <Checkbox
+        fieldLabel="Must Change Password"
+        currentValue={userCheckboxFields.MustChangePW}
+        onChangeCheckbox={handleCheckboxChange}
+        inputID="MustChangePW"
     />
     <div class="actionsContainer">
-        <a href="/appointments">Cancel</a>
-        <button on:click={submitAppointment}>Submit Appointment</button>
+        <a href="/accounts">Cancel</a>
+        <button on:click={submitUser}>Submit Appointment</button>
     </div>
 </div>

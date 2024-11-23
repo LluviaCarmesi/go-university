@@ -4,11 +4,11 @@
     import type IRole from "../../../interfaces/IRole";
     import "../../../styles/items.css";
     import "../../../styles/common.css";
-    import DatePicker from "../../../components/DatePicker.svelte";
     import Checkbox from "../../../components/Checkbox.svelte";
     import { onMount } from "svelte";
     import getCookie from "../../../utilities/getCookie";
     import addAppointment from "../../../services/appointments/addAppointment";
+    import DateTimePicker from "../../../components/DateTimePicker.svelte";
 
     let role: IRole = {
         isAdmin: true,
@@ -35,7 +35,7 @@
         IsComplete: false,
     };
 
-    const appointmentDateFields: any = {
+    const appointmentDateTimeFields: any = {
         StartTime: new Date(),
         EndTime: new Date(),
     };
@@ -49,13 +49,12 @@
     }
 
     function handleCheckboxChange(event: any) {
-        appointmentCheckboxFields[event.target.id] = event.target.value;
-        console.log(event.target.value);
+        appointmentCheckboxFields[event.target.id] = event.target.checked;
     }
 
-    function handleDatePickerChange(event: any) {
+    function handleDateTimePickerChange(event: any) {
         appointmentTextFields[event.target.id] = event.target.value;
-        appointmentDateFields[event.target.id] = new Date(event.target.value);
+        appointmentDateTimeFields[event.target.id] = new Date(event.target.value);
     }
 
     async function submitAppointment() {
@@ -65,8 +64,8 @@
             StudentEmail: appointmentTextFields.StudentEmail,
             AdminEmail: appointmentTextFields.AdminEmail,
             IsComplete: appointmentCheckboxFields.IsComplete,
-            StartTime: appointmentDateFields.StartTime,
-            EndTime: appointmentDateFields.EndTime,
+            StartTime: appointmentDateTimeFields.StartTime,
+            EndTime: appointmentDateTimeFields.EndTime,
         });
         isSuccessful = !addAppointmentResponse.doesErrorExist;
         if (!isSuccessful) {
@@ -122,16 +121,16 @@
         inputID="IsComplete"
         isDisabled={!role.isAdmin}
     />
-    <DatePicker
+    <DateTimePicker
         fieldLabel="Start Time"
         currentValue={appointmentTextFields.StartTime}
-        onChangeDateTimePicker={handleDatePickerChange}
+        onChangeDateTimePicker={handleDateTimePickerChange}
         inputID="StartTime"
     />
-    <DatePicker
+    <DateTimePicker
         fieldLabel="End Time"
         currentValue={appointmentTextFields.EndTime}
-        onChangeDateTimePicker={handleDatePickerChange}
+        onChangeDateTimePicker={handleDateTimePickerChange}
         inputID="EndTime"
     />
     <div class="actionsContainer">

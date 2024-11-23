@@ -5,10 +5,10 @@
     import "../../../../styles/items.css";
     import "../../../../styles/common.css";
     import Checkbox from "../../../../components/Checkbox.svelte";
-    import DatePicker from "../../../../components/DatePicker.svelte";
     import editAppointment from "../../../../services/appointments/editAppointment";
     import getAppointmentByID from "../../../../services/appointments/getAppointmentByID";
     import formatDateTime from "../../../../utilities/formatDateTime";
+    import DateTimePicker from "../../../../components/DateTimePicker.svelte";
     export let data;
 
     let role: IRole = {
@@ -36,7 +36,7 @@
         IsComplete: false,
     };
 
-    const appointmentDateFields: any = {
+    const appointmentDateTimeFields: any = {
         StartTime: new Date(),
         EndTime: new Date(),
     };
@@ -47,12 +47,11 @@
 
     function handleCheckboxChange(event: any) {
         appointmentCheckboxFields[event.target.id] = event.target.checked;
-        console.log(event.target.checked);
     }
 
-    function handleDatePickerChange(event: any) {
+    function handleDateTimePickerChange(event: any) {
         appointmentTextFields[event.target.id] = event.target.value;
-        appointmentDateFields[event.target.id] = new Date(event.target.value);
+        appointmentDateTimeFields[event.target.id] = new Date(event.target.value);
     }
 
     async function submitAppointment() {
@@ -62,8 +61,8 @@
             StudentEmail: appointmentTextFields.StudentEmail,
             AdminEmail: appointmentTextFields.AdminEmail,
             IsComplete: appointmentCheckboxFields.IsComplete,
-            StartTime: appointmentDateFields.StartTime,
-            EndTime: appointmentDateFields.EndTime,
+            StartTime: appointmentDateTimeFields.StartTime,
+            EndTime: appointmentDateTimeFields.EndTime,
         });
         isSuccessful = !editCourseResponse.doesErrorExist;
         if (!isSuccessful) {
@@ -82,14 +81,16 @@
             appointmentTextFields.StudentEmail = appointment.StudentEmail;
             appointmentTextFields.AdminEmail = appointment.AdminEmail;
             appointmentCheckboxFields.IsComplete = appointment.IsComplete;
-            appointmentDateFields.StartTime = appointment.StartTime;
+            appointmentDateTimeFields.StartTime = appointment.StartTime;
             appointmentTextFields.StartTime = formatDateTime(
                 appointment.StartTime,
+                true,
                 false,
             );
-            appointmentDateFields.EndTime = appointment.EndTime;
+            appointmentDateTimeFields.EndTime = appointment.EndTime;
             appointmentTextFields.EndTime = formatDateTime(
                 appointment.EndTime,
+                true,
                 false,
             );
         } else {
@@ -144,16 +145,16 @@
         inputID="IsComplete"
         isDisabled={!role.isAdmin}
     />
-    <DatePicker
+    <DateTimePicker
         fieldLabel="Start Time"
         currentValue={appointmentTextFields.StartTime}
-        onChangeDateTimePicker={handleDatePickerChange}
+        onChangeDateTimePicker={handleDateTimePickerChange}
         inputID="StartTime"
     />
-    <DatePicker
+    <DateTimePicker
         fieldLabel="End Time"
         currentValue={appointmentTextFields.EndTime}
-        onChangeDateTimePicker={handleDatePickerChange}
+        onChangeDateTimePicker={handleDateTimePickerChange}
         inputID="EndTime"
     />
     <div class="actionsContainer">

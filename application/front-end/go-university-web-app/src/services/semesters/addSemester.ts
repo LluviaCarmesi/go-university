@@ -1,16 +1,20 @@
-import { APPOINTMENTS_API_URI, USERS_API_URI } from "../../appSettings";
-import type IUser from "../../interfaces/IUser";
+import { SEMESTERS_API_URI } from "../../appSettings";
+import type ISemester from "../../interfaces/ISemester";
 import isStatusGood from "../../utilities/isStatusGood";
 
-export default async function addUser(item: IUser) {
+export default async function addSemester(item: ISemester) {
     let doesErrorExist = false;
     let errorMessage = "";
-    await fetch(USERS_API_URI, {
+    await fetch(SEMESTERS_API_URI, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(item)
+        body: JSON.stringify({
+            Name: item.Name,
+            StartDate: item.StartDate,
+            EndDate: item.EndDate
+        })
     })
         .then((response) => {
             doesErrorExist = !isStatusGood(response.status);

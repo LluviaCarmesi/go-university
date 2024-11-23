@@ -1,20 +1,20 @@
 import isStatusGood from "../../utilities/isStatusGood";
 import * as strings from "../../strings/ENUSStrings";
-import type ICourse from "../../interfaces/ICourse";
-import { COURSES_API_URI } from "../../appSettings";
+import { USERS_API_URI } from "../../appSettings";
+import type IUser from "../../interfaces/IUser";
 
-export default async function getCourses() {
+export default async function getUsers() {
     const returnedResponse: {
-        courses: ICourse[],
+        users: IUser[],
         isSuccessful: boolean,
         errorMessage: string
     } = {
-        courses: [],
+        users: [],
         isSuccessful: false,
         errorMessage: ""
     }
 
-    await fetch(COURSES_API_URI)
+    await fetch(USERS_API_URI)
         .then((response) => {
             returnedResponse.isSuccessful = isStatusGood(response.status);
             return response.json();
@@ -24,15 +24,15 @@ export default async function getCourses() {
                 returnedResponse.errorMessage = result.response;
             }
             else {
-                returnedResponse.courses = result;
+                returnedResponse.users = result;
             }
         })
         .catch((error) => {
             returnedResponse.errorMessage = error;
             console.log(error);
         });
-    if (returnedResponse.courses.length == 0) {
-        returnedResponse.errorMessage = strings.NO_COURSES_ERROR_MESSAGE;
+    if (returnedResponse.users.length == 0) {
+        returnedResponse.errorMessage = strings.NO_APPOINTMENTS_ERROR_MESSAGE;
     }
     return returnedResponse;
 }

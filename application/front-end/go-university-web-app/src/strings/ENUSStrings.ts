@@ -8,3 +8,5 @@ export const NO_APPOINTMENTS_ERROR_MESSAGE = "No courses available!";
 export const APPOINTMENT_DOESNT_EXIST_ERROR_MESSAGE = "Appointment doesn't exist!";
 export const NO_USERS_ERROR_MESSAGE = "No users available!";
 export const USER_DOESNT_EXIST_ERROR_MESSAGE = "User doesn't exist!";
+export const NO_SEMESTERS_ERROR_MESSAGE = "No semesters available!";
+export const SEMESTER_DOESNT_EXIST_ERROR_MESSAGE = "Semester doesn't exist!";
