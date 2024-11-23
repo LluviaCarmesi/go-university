@@ -1,12 +1,12 @@
-import { APPOINTMENTS_API_URI, USERS_API_URI } from "../../appSettings";
-import type IUser from "../../interfaces/IUser";
+import { SEMESTERS_API_URI } from "../../appSettings";
+import type ISemester from "../../interfaces/ISemester";
 import isStatusGood from "../../utilities/isStatusGood";
 
-export default async function addUser(item: IUser) {
+export default async function deleteSemester(item: ISemester) {
     let doesErrorExist = false;
     let errorMessage = "";
-    await fetch(USERS_API_URI, {
-        method: "POST",
+    await fetch(`${SEMESTERS_API_URI}${item.Name}`, {
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json"
         },

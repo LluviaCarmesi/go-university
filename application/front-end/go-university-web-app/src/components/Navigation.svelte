@@ -15,15 +15,19 @@
             <a href="/courses">Courses</a>
             <a href="/appointments">Appointments</a>
             <a href="/accounts">Accounts</a>
+            <a href="/semesters">Semesters</a>
+            <a href="/logout">Logout</a>
         </div>
     {:else if role.isProfessor}
         <div>
             <a href="/courses">Courses</a>
+            <a href="/logout">Logout</a>
         </div>
     {:else if role.isStudent}
         <div>
             <a href="/courses">Courses</a>
             <a href="/appointments">Appointments</a>
+            <a href="/logout">Logout</a>
         </div>
     {/if}
 </div>

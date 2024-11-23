@@ -115,7 +115,8 @@ func AddUser(user models.User) models.ServiceResponse {
 		user.LastName,
 		user.PhoneNumber,
 		user.HomeAddress,
-		user.Role);
+		user.Role,
+		user.MustChangePW);
 	if err != nil {
 		serviceResponse.IsSuccessful = false;
 		serviceResponse.ErrorMessage = "Unable to insert user: " + err.Error();

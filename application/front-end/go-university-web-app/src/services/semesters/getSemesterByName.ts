@@ -1,20 +1,24 @@
 import isStatusGood from "../../utilities/isStatusGood";
 import * as strings from "../../strings/ENUSStrings";
-import type ICourse from "../../interfaces/ICourse";
-import { COURSES_API_URI } from "../../appSettings";
+import type ISemester from "../../interfaces/ISemester";
+import { SEMESTERS_API_URI } from "../../appSettings";
 
-export default async function getCourses() {
+export default async function getSemesterByName(id: string) {
     const returnedResponse: {
-        courses: ICourse[],
+        semester: ISemester,
         isSuccessful: boolean,
         errorMessage: string
     } = {
-        courses: [],
+        semester: {
+            Name: "",
+            StartDate: new Date(),
+            EndDate: new Date()
+        },
         isSuccessful: false,
         errorMessage: ""
     }
 
-    await fetch(COURSES_API_URI)
+    await fetch(`${SEMESTERS_API_URI}${id}`)
         .then((response) => {
             returnedResponse.isSuccessful = isStatusGood(response.status);
             return response.json();
@@ -24,15 +28,17 @@ export default async function getCourses() {
                 returnedResponse.errorMessage = result.response;
             }
             else {
-                returnedResponse.courses = result;
+                returnedResponse.semester.Name = result.Name;
+                returnedResponse.semester.StartDate = new Date(result.StartDate);
+                returnedResponse.semester.EndDate = new Date(result.EndDate);
             }
         })
         .catch((error) => {
             returnedResponse.errorMessage = error;
             console.log(error);
         });
-    if (returnedResponse.courses.length == 0) {
-        returnedResponse.errorMessage = strings.NO_COURSES_ERROR_MESSAGE;
+    if (!returnedResponse.semester.Name) {
+        returnedResponse.errorMessage = strings.SEMESTER_DOESNT_EXIST_ERROR_MESSAGE;
     }
     return returnedResponse;
 }

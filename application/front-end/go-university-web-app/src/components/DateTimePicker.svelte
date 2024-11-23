@@ -1,19 +1,19 @@
 <script>
-    import "../styles/components/datePicker.css";
+    import "../styles/components/dateTimePicker.css";
     export let fieldLabel;
-    export let onChangeDatePicker;
+    export let onChangeDateTimePicker;
     export let currentValue;
     export let inputID;
     export let isDisabled = false;
 </script>
 
-<div class="datePickerContainer">
+<div class="dateTimePickerContainer">
     <span>{fieldLabel}</span>
     <input
         id={inputID}
         value={currentValue}
-        type="date"
+        type="datetime-local"
         disabled={isDisabled}
-        on:change={onChangeDatePicker}
+        on:change={onChangeDateTimePicker}
     />
 </div>

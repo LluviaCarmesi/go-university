@@ -185,3 +185,28 @@ func EditUser(user models.User) models.ServiceResponse {
 
 	return serviceResponse;
 }
+
+func EditSemester(semester models.Semester) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.UPDATE_SEMESTER_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		semester.StartDate,
+		semester.EndDate,
+		semester.Name);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to update semester: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf("updated semesters for the following name: %d", semester.Name);
+
+	return serviceResponse;
+}

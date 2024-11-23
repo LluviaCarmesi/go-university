@@ -24,14 +24,10 @@
 <div id="itemsLinks">
     {#if role.isAdmin}
         <div>
-            <a href="accounts/add">Add Account</a>
+            <a href="semesters/add">Add Semester</a>
         </div>
         <div>
-            <a href="accounts/show">Edit Accounts</a>
-        </div>
-    {:else if role.isStudent || role.isProfessor}
-        <div>
-            <a href="accounts/edit/">Edit Account</a>
+            <a href="semesters/show">Edit Semesters</a>
         </div>
     {/if}
 </div>

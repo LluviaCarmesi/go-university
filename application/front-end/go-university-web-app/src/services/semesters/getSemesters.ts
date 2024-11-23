@@ -1,20 +1,20 @@
 import isStatusGood from "../../utilities/isStatusGood";
 import * as strings from "../../strings/ENUSStrings";
-import { USERS_API_URI } from "../../appSettings";
-import type IUser from "../../interfaces/IUser";
+import { SEMESTERS_API_URI } from "../../appSettings";
+import type ISemester from "../../interfaces/ISemester";
 
-export default async function getAppointments() {
+export default async function getSemesters() {
     const returnedResponse: {
-        users: IUser[],
+        semesters: ISemester[],
         isSuccessful: boolean,
         errorMessage: string
     } = {
-        users: [],
+        semesters: [],
         isSuccessful: false,
         errorMessage: ""
     }
 
-    await fetch(USERS_API_URI)
+    await fetch(SEMESTERS_API_URI)
         .then((response) => {
             returnedResponse.isSuccessful = isStatusGood(response.status);
             return response.json();
@@ -24,15 +24,22 @@ export default async function getAppointments() {
                 returnedResponse.errorMessage = result.response;
             }
             else {
-                returnedResponse.users = result;
+                for (let i = 0; i < result.length; i++) {
+                    const currentSemester = result[i];
+                    returnedResponse.semesters.push({
+                        Name: currentSemester.Name,
+                        StartDate: new Date(currentSemester.StartDate),
+                        EndDate: new Date(currentSemester.EndDate),
+                    })
+                }
             }
         })
         .catch((error) => {
             returnedResponse.errorMessage = error;
             console.log(error);
         });
-    if (returnedResponse.users.length == 0) {
-        returnedResponse.errorMessage = strings.NO_APPOINTMENTS_ERROR_MESSAGE;
+    if (returnedResponse.semesters.length == 0) {
+        returnedResponse.errorMessage = strings.NO_SEMESTERS_ERROR_MESSAGE;
     }
     return returnedResponse;
 }

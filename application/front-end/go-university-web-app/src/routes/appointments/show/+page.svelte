@@ -70,6 +70,7 @@
                                 >{formatDateTime(
                                     appointment.StartTime,
                                     true,
+                                    true,
                                 )}</span
                             >
                         </td>
@@ -77,6 +78,7 @@
                             <span
                                 >{formatDateTime(
                                     appointment.EndTime,
+                                    true,
                                     true,
                                 )}</span
                             >

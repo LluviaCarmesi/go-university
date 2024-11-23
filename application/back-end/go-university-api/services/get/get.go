@@ -211,39 +211,6 @@ func GetUserByEmail(email string) models.User{
 	return user;
 }
 
-func GetStudents() []models.User {
-	dbConnection := services.ConnectToDB();
-	defer dbConnection.Close();
-	users := []models.User{};
-	
-	results, err := dbConnection.Query(settings.GET_STUDENTS_QUERY);
-	defer results.Close();
-
-	if (err != nil) {
-		panic("Error getting data: " + err.Error());
-	}
-
-	for results.Next() {
-		var user models.User;
-
-		err := results.Scan(
-			&user.Email,
-			&user.EmailAlias,
-			&user.FirstName,
-			&user.LastName,
-			&user.PhoneNumber,
-			&user.HomeAddress,
-			&user.Role);
-		if (err != nil) {
-			panic("Error scanning row: " + err.Error());
-		}
-
-		users = append(users, user);
-	}
-
-	return users;
-}
-
 func GetAppointments () []models.Appointment {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
@@ -331,6 +298,31 @@ func GetSemesters () []models.Semester {
 	}
 
 	return semesters;
+}
+
+func GetSemesterByName(name string) models.Semester {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	semester := models.Semester{};
+
+	query := settings.GET_SEMESTERS_QUERY + " WHERE name = '" + name + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		err := results.Scan(
+			&semester.Name,
+			&semester.StartDate,
+			&semester.EndDate);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	return semester;
 }
 
 func GetTaughtCourses() []models.TaughtCourse {

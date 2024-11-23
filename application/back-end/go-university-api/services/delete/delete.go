@@ -45,10 +45,10 @@ func DeleteDepartment(id int) models.ServiceResponse {
 		id);
 	if err != nil {
 		serviceResponse.IsSuccessful = false;
-		serviceResponse.ErrorMessage = "Unable to update department: " + err.Error();
+		serviceResponse.ErrorMessage = "Unable to delete department: " + err.Error();
 		return serviceResponse;
 	}
-	log.Printf("updated departments for the following id: %d", id);
+	log.Printf("deleted from departments for the following id: %d", id);
 
 	return serviceResponse;
 }
@@ -95,6 +95,29 @@ func DeleteUser(email string) models.ServiceResponse {
 		return serviceResponse;
 	}
 	log.Printf("deleted from users for the following email: %d", email);
+
+	return serviceResponse;
+}
+
+func DeleteSemester(name string) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.DELETE_SEMESTER_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		name);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to delete semester: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf("deleted from semesters for the following name: %d", name);
 
 	return serviceResponse;
 }
