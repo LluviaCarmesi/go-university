@@ -38,7 +38,6 @@
     function handleDatePickerChange(event: any) {
         semesterTextFields[event.target.id] = event.target.value;
         semesterDateFields[event.target.id] = new Date(event.target.value);
-        console.log(new Date(event.target.value));
     }
 
     async function submitSemester() {

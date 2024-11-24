@@ -6,7 +6,6 @@
     import "../../../styles/common.css";
     import DatePicker from "../../../components/DatePicker.svelte";
     import addSemester from "../../../services/semesters/addSemester";
-    import formatDateTime from "../../../utilities/formatDateTime";
 
     let role: IRole = {
         isAdmin: true,
@@ -40,19 +39,21 @@
 
     async function submitSemester() {
         isLoading = true;
-        const addUserResponse = await addSemester({
+        const addSemesterResponse = await addSemester({
             Name: semesterTextFields.Name,
             StartDate: semesterDateFields.StartDate,
             EndDate: semesterDateFields.EndDate,
         });
-        isSuccessful = !addUserResponse.doesErrorExist;
+        isSuccessful = !addSemesterResponse.doesErrorExist;
         if (!isSuccessful) {
-            errorMessage = addUserResponse.errorMessage;
+            errorMessage = addSemesterResponse.errorMessage;
         } else {
             errorMessage = "";
             semesterTextFields.Name = "";
-            semesterDateFields.StartDate = "";
-            semesterDateFields.EndDate = "";
+            semesterDateFields.StartDate = new Date();
+            semesterTextFields.StartDate = "";
+            semesterDateFields.EndDate = new Date();
+            semesterTextFields.EndDate = "";
         }
         isLoading = false;
     }
