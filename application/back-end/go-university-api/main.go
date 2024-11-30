@@ -220,6 +220,10 @@ func appointments(w http.ResponseWriter, r *http.Request) {
 				json.NewEncoder(w).Encode(get.GetAppointments());
 				return;
 			}
+			_, err := strconv.Atoi(appointmentID);
+			if err != nil {
+				panic("appointmentID is not an int");
+			}
 			json.NewEncoder(w).Encode(get.GetAppointmentByID(appointmentID));
 			break;
 		case http.MethodPost:
@@ -299,6 +303,166 @@ func semesters(w http.ResponseWriter, r *http.Request) {
 				return;
 			}
 			json.NewEncoder(w).Encode(get.GetSemesterByName(name));
+			break;
+		case http.MethodPost:
+			var semester models.Semester;
+			err := json.NewDecoder(r.Body).Decode(&semester);
+			if (err != nil) {
+				panic("Semester not structured properly: " + err.Error());
+			}
+			postResponse := post.AddSemester(semester);
+			if (!postResponse.IsSuccessful) {
+				fmt.Println(postResponse.IsSuccessful);
+				w.WriteHeader(http.StatusBadRequest);
+			}
+			json.NewEncoder(w).Encode(postResponse);
+			break;
+		case http.MethodPatch:
+			pathParts := strings.Split(r.URL.Path, "/");
+			if len(pathParts) < 4 {
+				panic("Need Name in path");
+			}
+			name := pathParts[3];
+			if (name == "") {
+				panic("Need Name in path");
+			}
+			var semester models.Semester;
+			err := json.NewDecoder(r.Body).Decode(&semester);
+			if (err != nil) {
+				panic("Semester not structured properly: " + err.Error());
+			}
+			semester.Name = name;
+			patchResponse := patch.EditSemester(semester);
+			if (!patchResponse.IsSuccessful) {
+				fmt.Println(patchResponse.IsSuccessful);
+				w.WriteHeader(http.StatusBadRequest);
+			}
+			json.NewEncoder(w).Encode(patchResponse);
+			break;
+		case http.MethodDelete:
+			pathParts := strings.Split(r.URL.Path, "/")
+			if len(pathParts) < 4 {
+				panic("Need Name in path");
+			}
+			name := pathParts[3];
+			if (name == "") {
+				panic("Need Name in path");
+			}
+			deleteResponse := delete.DeleteSemester(name);
+			if (!deleteResponse.IsSuccessful) {
+				fmt.Println(deleteResponse.IsSuccessful);
+				w.WriteHeader(http.StatusBadRequest);
+			}
+			json.NewEncoder(w).Encode(deleteResponse);
+			break;
+		case http.MethodOptions:
+			break;
+		default:
+			panic("Method not supported");
+	}
+}
+
+func departments(w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
+	switch (r.Method) {
+		case http.MethodGet:
+			pathParts := strings.Split(r.URL.Path, "/");
+			departmentID := pathParts[3];
+			if (departmentID == "") {
+				json.NewEncoder(w).Encode(get.GetDepartments());
+				return;
+			}
+			_, err := strconv.Atoi(departmentID);
+			if err != nil {
+				panic("departmentID is not an int");
+			}
+			json.NewEncoder(w).Encode(get.GetDepartmentByID(departmentID));
+			break;
+		case http.MethodPost:
+			var department models.Department;
+			err := json.NewDecoder(r.Body).Decode(&department);
+			if (err != nil) {
+				panic("Department not structured properly: " + err.Error());
+			}
+			postResponse := post.AddDepartment(department);
+			if (!postResponse.IsSuccessful) {
+				fmt.Println(postResponse.IsSuccessful);
+				w.WriteHeader(http.StatusBadRequest);
+			}
+			json.NewEncoder(w).Encode(postResponse);
+			break;
+		case http.MethodPatch:
+			pathParts := strings.Split(r.URL.Path, "/");
+			if len(pathParts) < 4 {
+				panic("Need ID in path");
+			}
+			departmentID := pathParts[3];
+			if (departmentID == "") {
+				panic("Need ID in path");
+			}
+			var department models.Department;
+			err := json.NewDecoder(r.Body).Decode(&department);
+			if (err != nil) {
+				panic("Department not structured properly: " + err.Error());
+			}
+			departmentIDInt, err := strconv.Atoi(departmentID);
+			if err != nil {
+				panic("departmentID is not an int");
+			}
+			department.ID = departmentIDInt;
+			patchResponse := patch.EditDepartment(department);
+			if (!patchResponse.IsSuccessful) {
+				fmt.Println(patchResponse.IsSuccessful);
+				w.WriteHeader(http.StatusBadRequest);
+			}
+			json.NewEncoder(w).Encode(patchResponse);
+			break;
+		case http.MethodDelete:
+			pathParts := strings.Split(r.URL.Path, "/")
+			if len(pathParts) < 4 {
+				panic("Need ID in path");
+			}
+			departmentID := pathParts[3];
+			if (departmentID == "") {
+				panic("Need ID in path");
+			}
+			departmentIDInt, err := strconv.Atoi(departmentID);
+			if err != nil {
+				panic("departmentID is not an int");
+			}
+			deleteResponse := delete.DeleteDepartment(departmentIDInt);
+			if (!deleteResponse.IsSuccessful) {
+				fmt.Println(deleteResponse.IsSuccessful);
+				w.WriteHeader(http.StatusBadRequest);
+			}
+			json.NewEncoder(w).Encode(deleteResponse);
+			break;
+		case http.MethodOptions:
+			break;
+		default:
+			panic("Method not supported");
+	}
+}
+
+func professorsInDepartments(w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
+	switch (r.Method) {
+		case http.MethodGet:
+			pathParts := strings.Split(r.URL.Path, "/");
+			emailAndID := pathParts[3];
+			if (emailAndID == "") {
+				json.NewEncoder(w).Encode(get.GetProfessorsInDepartments());
+				return;
+			}
+			emailAndIDParts := strings.Split(emailAndID, "-");
+			if (len(emailAndIDParts) < 2) {
+				panic("Need ID in path");
+			}
+			_, err := strconv.Atoi(emailAndIDParts[1]);
+			if err != nil {
+				panic("departmentID is not an int");
+			}
+			json.NewEncoder(w).Encode(get.GetProfessorsInDepartmentsByNameAndID(emailAndIDParts[0], emailAndIDParts[1]));
 			break;
 		case http.MethodPost:
 			var semester models.Semester;
@@ -521,6 +685,8 @@ func main() {
 	http.HandleFunc(settings.SEMESTERS_PATH, semesters);
 	http.HandleFunc(settings.TAUGHT_COURSES_PATH, taughtCourses);
 	http.HandleFunc(settings.REGISTRATIONS_PATH, registrations);
+	http.HandleFunc(settings.DEPARTMENTS_PATH, departments);
+	http.HandleFunc(settings.PROFESSORS_IN_DEPARTMENTS_PATH, professorsInDepartments);
 	http.HandleFunc(settings.USERS_BY_TOKEN_PATH, getUserByToken);
 	http.HandleFunc(settings.USERS_LOGIN_PATH, loginUser);
 

@@ -3,7 +3,6 @@
     import type IRole from "../../../interfaces/IRole";
     import "../../../styles/items.css";
     import "../../../styles/common.css";
-    import getSemesters from "../../../services/semesters/getSemesters";
     import type IDepartment from "../../../interfaces/IDepartment";
     import getDepartments from "../../../services/departments/getDepartments";
 
@@ -40,16 +39,15 @@
         <table>
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
                 </tr>
             </thead>
             {#each departments as department}
                 <tbody>
                     <tr>
                         <td>
-                            <a href={"edit/" + department.ID}>
+                            <a href={"edit-department/" + department.ID}>
                                 <span>{department.ID}</span>
                             </a>
                         </td>

@@ -12,3 +12,5 @@ export const NO_SEMESTERS_ERROR_MESSAGE = "No semesters available!";
 export const SEMESTER_DOESNT_EXIST_ERROR_MESSAGE = "Semester doesn't exist!";
 export const NO_DEPARTMENTS_ERROR_MESSAGE = "No departments available!";
 export const DEPARTMENT_DOESNT_EXIST_ERROR_MESSAGE = "Department doesn't exist!";
+export const NO_PROFESSORS_IN_DEPARTMENTS_ERROR_MESSAGE = "No professors in departments available!";
+export const PROFESSOR_IN_DEPARTMENT_DOESNT_EXIST_ERROR_MESSAGE = "Professor in department doesn't exist!";

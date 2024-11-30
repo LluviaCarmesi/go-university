@@ -10,13 +10,14 @@ type Course struct {
 }
 
 type Department struct {
-	ID string `json:id`
-	Name string `json:"name"`
+	ID int `json:id`
+	Name string `json:name`
 }
 
 type ProfessorInDepartment struct {
 	ProfessorEmail string `json:professor_email`
 	DepartmentID int `json:department_id`
+	DepartmentName string `json:department_name`
 	IsLeader bool `json:is_leader`
 }
 

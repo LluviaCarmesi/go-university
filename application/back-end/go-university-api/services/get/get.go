@@ -89,11 +89,35 @@ func GetDepartments() []models.Department {
 	return departments;
 }
 
+func GetDepartmentByID(departmentID string) models.Department {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	department := models.Department{};
+
+	query := settings.GET_DEPARTMENTS_QUERY + " WHERE id = '" + departmentID + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		err := results.Scan(
+			&department.ID,
+			&department.Name);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	return department;
+}
+
 func GetProfessorsInDepartments() []models.ProfessorInDepartment {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	professorsInDepartments := []models.ProfessorInDepartment{};
-	
+	departments := GetDepartments();
 	results, err := dbConnection.Query(settings.GET_PROFESSORS_IN_DEPARTMENTS_QUERY);
 	defer results.Close();
 
@@ -111,11 +135,41 @@ func GetProfessorsInDepartments() []models.ProfessorInDepartment {
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
-
+		for i := 0; i < len(departments); i++ {
+			if (departments[i].ID == professorInDepartment.DepartmentID) {
+				professorInDepartment.DepartmentName = departments[i].Name
+			}
+			break;
+		}
 		professorsInDepartments = append(professorsInDepartments, professorInDepartment);
 	}
 
 	return professorsInDepartments;
+}
+
+func GetProfessorsInDepartmentsByNameAndID(email string, departmentID string) models.ProfessorInDepartment {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	professorInDepartment := models.ProfessorInDepartment{};
+
+	query := settings.GET_PROFESSORS_IN_DEPARTMENTS_QUERY + " WHERE professor_email = '" + email + "' AND department_id = '" + departmentID + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		err := results.Scan(
+			&professorInDepartment.ProfessorEmail,
+			&professorInDepartment.DepartmentID,
+			&professorInDepartment.IsLeader);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	return professorInDepartment;
 }
 
 func GetUsers() []models.User {

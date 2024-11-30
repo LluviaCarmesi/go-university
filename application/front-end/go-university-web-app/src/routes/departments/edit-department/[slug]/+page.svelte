@@ -4,8 +4,8 @@
     import type IRole from "../../../../interfaces/IRole";
     import "../../../../styles/items.css";
     import "../../../../styles/common.css";
-    import addDepartment from "../../../../services/departments/addDepartment";
     import getDepartmentByID from "../../../../services/departments/getDepartmentByID";
+    import editDepartment from "../../../../services/departments/editDepartment";
     export let data;
 
     let role: IRole = {
@@ -32,16 +32,15 @@
 
     async function submitDepartment() {
         isLoading = true;
-        const addDepartmentResponse = await addDepartment({
+        const editDepartmentResponse = await editDepartment({
             ID: departmentNumberFields.ID,
             Name: departmentTextFields.Name,
         });
-        isSuccessful = !addDepartmentResponse.doesErrorExist;
+        isSuccessful = !editDepartmentResponse.doesErrorExist;
         if (!isSuccessful) {
-            errorMessage = addDepartmentResponse.errorMessage;
+            errorMessage = editDepartmentResponse.errorMessage;
         } else {
             errorMessage = "";
-            departmentTextFields.Name = "";
         }
         isLoading = false;
     }
@@ -51,7 +50,7 @@
         if (departmentResponse.isSuccessful) {
             const department = departmentResponse.department;
             departmentNumberFields.ID = department.ID;
-            departmentTextFields.StudentEmail = department.Name;
+            departmentTextFields.Name = department.Name;
         } else {
             errorMessage = departmentResponse.errorMessage;
         }
