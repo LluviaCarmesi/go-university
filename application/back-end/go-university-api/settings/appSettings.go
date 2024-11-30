@@ -7,8 +7,10 @@ const USERS_PATH = API_ROOT + "users/";
 const STUDENTS_PATH = USERS_PATH + "students/";
 const APPOINTMENTS_PATH = API_ROOT + "appointments/";
 const SEMESTERS_PATH = API_ROOT + "semesters/";
-const TAUGHT_COURSES_PATH = API_ROOT + "taught_courses/";
+const TAUGHT_COURSES_PATH = API_ROOT + "taught-courses/";
 const REGISTRATIONS_PATH = API_ROOT + "registrations/";
+const DEPARTMENTS_PATH = API_ROOT + "departments/";
+const PROFESSORS_IN_DEPARTMENTS_PATH = API_ROOT + "professors-in-departments/";
 const USERS_LOGIN_PATH = USERS_PATH + "login/";
 const USERS_BY_TOKEN_PATH = USERS_PATH + "by_token/";
 
