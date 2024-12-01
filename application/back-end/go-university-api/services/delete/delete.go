@@ -30,7 +30,7 @@ func DeleteCourse(id string) models.ServiceResponse {
 	return serviceResponse;
 }
 
-func DeleteDepartment(id int) models.ServiceResponse {
+func DeleteDepartment(id string) models.ServiceResponse {
 	serviceResponse := models.ServiceResponse{
 		IsSuccessful: true,
 		ErrorMessage: "",
@@ -38,7 +38,7 @@ func DeleteDepartment(id int) models.ServiceResponse {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 
-	query := settings.DELETE_DEPARTMENT_QUERY;
+	query := settings.DELETE_DEPARTMENT_QUERY + "";
 	_, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
@@ -53,7 +53,34 @@ func DeleteDepartment(id int) models.ServiceResponse {
 	return serviceResponse;
 }
 
-func DeleteAppointment(id int) models.ServiceResponse {
+func DeleteProfessorInDepartment(email string, departmentID string) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.DELETE_PROFESSOR_IN_DEPARTMENT_QUERY + "";
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		email,
+		departmentID);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to delete professor in department: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf(
+		"deleted from professors_in_departments for the following email and department id: %d %d",
+		email,
+		departmentID);
+
+	return serviceResponse;
+}
+
+func DeleteAppointment(id string) models.ServiceResponse {
 	serviceResponse := models.ServiceResponse{
 		IsSuccessful: true,
 		ErrorMessage: "",
@@ -118,6 +145,56 @@ func DeleteSemester(name string) models.ServiceResponse {
 		return serviceResponse;
 	}
 	log.Printf("deleted from semesters for the following name: %d", name);
+
+	return serviceResponse;
+}
+
+func DeleteTaughtCourse(id string) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.DELETE_TAUGHT_COURSE_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		id);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to delete taught course: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf("deleted from taught_courses for the following id: %d", id);
+
+	return serviceResponse;
+}
+
+func DeleteRegistration(email string, taughtCourseID string) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.DELETE_REGISTRATION_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		email,
+		taughtCourseID);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to delete registration: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf(
+		"deleted from registrations for the following email and taught course id: %d %d",
+		email,
+		taughtCourseID);
 
 	return serviceResponse;
 }

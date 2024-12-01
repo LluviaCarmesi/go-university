@@ -50,6 +50,7 @@ type Semester struct {
 }
 
 type TaughtCourse struct {
+	ID int `json:id`
 	CourseID string `json:course_id`
 	SemesterName string `json:semester_name`
 	ProfessorEmail string `json:professor_email`
@@ -60,7 +61,6 @@ type TaughtCourse struct {
 }
 
 type Registration struct {
-	ID int `json:id`
 	StudentEmail string `json:student_email`
 	TaughtCourseID int `json:taught_course_id`
 	FinalGrade float32 `json:final_grade`

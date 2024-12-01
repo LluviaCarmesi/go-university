@@ -61,21 +61,28 @@ const UPDATE_SEMESTER_QUERY =
 const DELETE_SEMESTER_QUERY =
 	"DELETE FROM semesters WHERE name = ?";
 const GET_TAUGHT_COURSES_QUERY = 
-	"SELECT id,course_id,semester_id,professor_email,max_students,location,start_time,end_time" +
+	"SELECT id,course_id,semester_name,professor_email,max_students,location,start_time,end_time" +
 	"FROM taught_courses";
 const INSERT_TAUGHT_COURSE_QUERY =
-	"INSERT INTO taught_courses (course_id,semester_id,professer_email,max_students,location," +
+	"INSERT INTO taught_courses (course_id,semester_name,professer_email,max_students,location," +
 	"start_time,end_time) VALUES (?, ?, ?, ?, ?)";
 const UPDATE_TAUGHT_COURSE_QUERY =
 	"UPDATE taught_courses SET professor_email = ?, max_students = ?, location = ?, " +
 	"start_time = ?, end_time = ?" +
-	"WHERE course_id = ? AND semester_id = ? AND professor_email = ?";
+	"WHERE id = ?";
+const DELETE_TAUGHT_COURSE_QUERY = 
+	"DELETE FROM taught_courses WHERE id = ?";
 const GET_REGISTRATIONS_QUERY =
 	"SELECT id,student_email,taught_course_id,final_grade,status " +
 	"FROM registrations";
 const INSERT_REGISTRATION_QUERY =
 	"INSERT INTO registrations (student_email,taught_course_id,final_grade,status) " +
 	"VALUES (?, ?, ?, ?)";
+const UPDATE_REGISTRATION_QUERY =
+	"UPDATE registrations SET final_grade = ?, status = ?, " +
+	"WHERE student_email = ? AND taught_course_id = ?";
+const DELETE_REGISTRATION_QUERY = 
+	"DELETE FROM registrations WHERE student_email = ? AND taught_course_id = ?";
 const GET_DEPARTMENTS_QUERY =
 	"SELECT id,name FROM departments";
 const INSERT_DEPARTMENT_QUERY =
@@ -89,6 +96,9 @@ const GET_PROFESSORS_IN_DEPARTMENTS_QUERY =
 const INSERT_PROFESSOR_IN_DEPARTMENT_QUERY =
 	"INSERT INTO professors_in_departments (professor_email,department_id,is_leader) " +
 	"VALUES (?, ?, ?)";
+const UPDATE_PROFESSORS_IN_DEPARTMENT_QUERY =
+	"UPDATE professors_in_departments SET is_leader = ? " +
+	"WHERE professor_email = ? AND department_id = ?";
 const DELETE_PROFESSOR_IN_DEPARTMENT_QUERY =
 	"DELETE FROM professors_in_departments WHERE professor_email = ? AND department_id = ?";
 
