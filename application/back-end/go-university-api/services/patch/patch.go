@@ -59,6 +59,34 @@ func EditDepartment(department models.Department) models.ServiceResponse {
 	return serviceResponse;
 }
 
+func EditProfessorInDepartment(professorInDepartment models.ProfessorInDepartment) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.UPDATE_PROFESSORS_IN_DEPARTMENT_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		professorInDepartment.IsLeader,
+		professorInDepartment.ProfessorEmail,
+		professorInDepartment.DepartmentID);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to update professor in department: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf(
+		"updated professors_in_departments for the following email and department id: %d %d",
+		professorInDepartment.ProfessorEmail,
+		professorInDepartment.DepartmentID);
+
+	return serviceResponse;
+}
+
 func EditAppointment(appointment models.Appointment) models.ServiceResponse {
 	serviceResponse := models.ServiceResponse{
 		IsSuccessful: true,
@@ -207,6 +235,63 @@ func EditSemester(semester models.Semester) models.ServiceResponse {
 		return serviceResponse;
 	}
 	log.Printf("updated semesters for the following name: %d", semester.Name);
+
+	return serviceResponse;
+}
+
+func EditTaughtCourse(taughtCourse models.TaughtCourse) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.UPDATE_TAUGHT_COURSE_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		taughtCourse.ProfessorEmail,
+		taughtCourse.MaxStudents,
+		taughtCourse.Location,
+		taughtCourse.StartTime,
+		taughtCourse.EndTime,
+		taughtCourse.ID);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to update taught course: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf("updated taught_courses for the following id: %d", taughtCourse.ID);
+
+	return serviceResponse;
+}
+
+func EditRegistration(registration models.Registration) models.ServiceResponse {
+	serviceResponse := models.ServiceResponse{
+		IsSuccessful: true,
+		ErrorMessage: "",
+	}
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+
+	query := settings.UPDATE_REGISTRATION_QUERY;
+	_, err := dbConnection.ExecContext(
+		context.Background(),
+		query,
+		registration.FinalGrade,
+		registration.Status,
+		registration.StudentEmail,
+		registration.TaughtCourseID);
+	if err != nil {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Unable to update registration: " + err.Error();
+		return serviceResponse;
+	}
+	log.Printf(
+		"updated registrations for the following email and taught course id: %d %d",
+		registration.StudentEmail,
+		registration.TaughtCourseID);
 
 	return serviceResponse;
 }

@@ -147,7 +147,7 @@ func GetProfessorsInDepartments() []models.ProfessorInDepartment {
 	return professorsInDepartments;
 }
 
-func GetProfessorsInDepartmentsByNameAndID(email string, departmentID string) models.ProfessorInDepartment {
+func GetProfessorsInDepartmentsByEmailAndID(email string, departmentID string) models.ProfessorInDepartment {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	professorInDepartment := models.ProfessorInDepartment{};
@@ -265,7 +265,7 @@ func GetUserByEmail(email string) models.User{
 	return user;
 }
 
-func GetAppointments () []models.Appointment {
+func GetAppointments() []models.Appointment {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	appointments := []models.Appointment{};
@@ -412,6 +412,36 @@ func GetTaughtCourses() []models.TaughtCourse {
 	return taughtCourses;
 }
 
+func GetTaughtCourseByID(id string) models.TaughtCourse {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	taughtCourse := models.TaughtCourse{};
+
+	query := settings.GET_TAUGHT_COURSES_QUERY + " WHERE id = '" + id + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		err := results.Scan(
+			&taughtCourse.ID,
+			&taughtCourse.CourseID,
+			&taughtCourse.SemesterName,
+			&taughtCourse.ProfessorEmail,
+			&taughtCourse.MaxStudents,
+			&taughtCourse.Location,
+			&taughtCourse.StartTime,
+			&taughtCourse.EndTime);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	return taughtCourse;
+}
+
 func GetRegistrations() []models.Registration {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
@@ -428,7 +458,6 @@ func GetRegistrations() []models.Registration {
 		var registration models.Registration;
 
 		err := results.Scan(
-			&registration.ID,
 			&registration.StudentEmail,
 			&registration.TaughtCourseID,
 			&registration.FinalGrade,
@@ -441,4 +470,30 @@ func GetRegistrations() []models.Registration {
 	}
 
 	return registrations;
+}
+
+func GetRegistrationByEmailAndID(email string, taughtCourseID string) models.Registration {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	registration := models.Registration{};
+
+	query := settings.GET_REGISTRATIONS_QUERY + " WHERE student_email = '" + email + "' AND taught_course_id = '" + taughtCourseID + "'";
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		err := results.Scan(
+			&registration.StudentEmail,
+			&registration.TaughtCourseID,
+			&registration.FinalGrade,
+			&registration.Status);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+	}
+	return registration;
 }

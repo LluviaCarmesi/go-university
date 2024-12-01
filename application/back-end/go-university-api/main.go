@@ -274,11 +274,11 @@ func appointments(w http.ResponseWriter, r *http.Request) {
 			if (appointmentID == "") {
 				panic("Need ID in path");
 			}
-			appointmentIDInt, err := strconv.Atoi(appointmentID);
+			_, err := strconv.Atoi(appointmentID);
 			if err != nil {
 				panic("appointmentID is not an int");
 			}
-			deleteResponse := delete.DeleteAppointment(appointmentIDInt);
+			deleteResponse := delete.DeleteAppointment(appointmentID);
 			if (!deleteResponse.IsSuccessful) {
 				fmt.Println(deleteResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -426,11 +426,11 @@ func departments(w http.ResponseWriter, r *http.Request) {
 			if (departmentID == "") {
 				panic("Need ID in path");
 			}
-			departmentIDInt, err := strconv.Atoi(departmentID);
+			_, err := strconv.Atoi(departmentID);
 			if err != nil {
 				panic("departmentID is not an int");
 			}
-			deleteResponse := delete.DeleteDepartment(departmentIDInt);
+			deleteResponse := delete.DeleteDepartment(departmentID);
 			if (!deleteResponse.IsSuccessful) {
 				fmt.Println(deleteResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -456,21 +456,21 @@ func professorsInDepartments(w http.ResponseWriter, r *http.Request) {
 			}
 			emailAndIDParts := strings.Split(emailAndID, "-");
 			if (len(emailAndIDParts) < 2) {
-				panic("Need ID in path");
+				panic("Need Department ID in path");
 			}
 			_, err := strconv.Atoi(emailAndIDParts[1]);
 			if err != nil {
 				panic("departmentID is not an int");
 			}
-			json.NewEncoder(w).Encode(get.GetProfessorsInDepartmentsByNameAndID(emailAndIDParts[0], emailAndIDParts[1]));
+			json.NewEncoder(w).Encode(get.GetProfessorsInDepartmentsByEmailAndID(emailAndIDParts[0], emailAndIDParts[1]));
 			break;
 		case http.MethodPost:
-			var semester models.Semester;
-			err := json.NewDecoder(r.Body).Decode(&semester);
+			var professorInDepartment models.ProfessorInDepartment;
+			err := json.NewDecoder(r.Body).Decode(&professorInDepartment);
 			if (err != nil) {
-				panic("Semester not structured properly: " + err.Error());
+				panic("Professor in department not structured properly: " + err.Error());
 			}
-			postResponse := post.AddSemester(semester);
+			postResponse := post.AddProfessorInDepartment(professorInDepartment);
 			if (!postResponse.IsSuccessful) {
 				fmt.Println(postResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -480,19 +480,28 @@ func professorsInDepartments(w http.ResponseWriter, r *http.Request) {
 		case http.MethodPatch:
 			pathParts := strings.Split(r.URL.Path, "/");
 			if len(pathParts) < 4 {
-				panic("Need Name in path");
+				panic("Need Professor Email and Department ID in path");
 			}
-			name := pathParts[3];
-			if (name == "") {
-				panic("Need Name in path");
+			emailAndID := pathParts[3];
+			if (emailAndID == "") {
+				panic("Need Professor Email and Department ID in path");
 			}
-			var semester models.Semester;
-			err := json.NewDecoder(r.Body).Decode(&semester);
+			emailAndIDParts := strings.Split(emailAndID, "-");
+			if (len(emailAndIDParts) < 2) {
+				panic("Need Department ID in path");
+			}
+			IDInt, err := strconv.Atoi(emailAndIDParts[1]);
+			if err != nil {
+				panic("departmentID is not an int");
+			}
+			var professorInDepartment models.ProfessorInDepartment;
+			err = json.NewDecoder(r.Body).Decode(&professorInDepartment);
 			if (err != nil) {
-				panic("Semester not structured properly: " + err.Error());
+				panic("Professor in department not structured properly: " + err.Error());
 			}
-			semester.Name = name;
-			patchResponse := patch.EditSemester(semester);
+			professorInDepartment.ProfessorEmail = emailAndIDParts[0];
+			professorInDepartment.DepartmentID = IDInt;
+			patchResponse := patch.EditProfessorInDepartment(professorInDepartment);
 			if (!patchResponse.IsSuccessful) {
 				fmt.Println(patchResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -500,15 +509,23 @@ func professorsInDepartments(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(patchResponse);
 			break;
 		case http.MethodDelete:
-			pathParts := strings.Split(r.URL.Path, "/")
+			pathParts := strings.Split(r.URL.Path, "/");
 			if len(pathParts) < 4 {
-				panic("Need Name in path");
+				panic("Need Professor Email and Department ID in path");
 			}
-			name := pathParts[3];
-			if (name == "") {
-				panic("Need Name in path");
+			emailAndID := pathParts[3];
+			if (emailAndID == "") {
+				panic("Need Professor Email and Department ID in path");
 			}
-			deleteResponse := delete.DeleteSemester(name);
+			emailAndIDParts := strings.Split(emailAndID, "-");
+			if (len(emailAndIDParts) < 2) {
+				panic("Need Department ID in path");
+			}
+			_, err := strconv.Atoi(emailAndIDParts[1]);
+			if err != nil {
+				panic("departmentID is not an int");
+			}
+			deleteResponse := delete.DeleteProfessorInDepartment(emailAndIDParts[0], emailAndIDParts[1]);
 			if (!deleteResponse.IsSuccessful) {
 				fmt.Println(deleteResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -527,20 +544,20 @@ func taughtCourses (w http.ResponseWriter, r *http.Request) {
 	switch (r.Method) {
 		case http.MethodGet:
 			pathParts := strings.Split(r.URL.Path, "/");
-			appointmentID := pathParts[3];
-			if (appointmentID == "") {
-				json.NewEncoder(w).Encode(get.GetAppointments());
+			taughtCourseID := pathParts[3];
+			if (taughtCourseID == "") {
+				json.NewEncoder(w).Encode(get.GetTaughtCourses());
 				return;
 			}
-			json.NewEncoder(w).Encode(get.GetAppointmentByID(appointmentID));
+			json.NewEncoder(w).Encode(get.GetTaughtCourseByID(taughtCourseID));
 			break;
 		case http.MethodPost:
-			var appointment models.Appointment;
-			err := json.NewDecoder(r.Body).Decode(&appointment);
+			var taughtCourse models.TaughtCourse;
+			err := json.NewDecoder(r.Body).Decode(&taughtCourse);
 			if (err != nil) {
-				panic("Appointment not structured properly: " + err.Error());
+				panic("Taught Course not structured properly: " + err.Error());
 			}
-			postResponse := post.AddAppointment(appointment);
+			postResponse := post.AddTaughtCourse(taughtCourse);
 			if (!postResponse.IsSuccessful) {
 				fmt.Println(postResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -552,21 +569,21 @@ func taughtCourses (w http.ResponseWriter, r *http.Request) {
 			if len(pathParts) < 4 {
 				panic("Need ID in path");
 			}
-			appointmentID := pathParts[3];
-			if (appointmentID == "") {
+			taughtCourseID := pathParts[3];
+			if (taughtCourseID == "") {
 				panic("Need ID in path");
 			}
-			var appointment models.Appointment;
-			err := json.NewDecoder(r.Body).Decode(&appointment);
+			var taughtCourse models.TaughtCourse;
+			err := json.NewDecoder(r.Body).Decode(&taughtCourse);
 			if (err != nil) {
-				panic("Appointment not structured properly: " + err.Error());
+				panic("Taught Course not structured properly: " + err.Error());
 			}
-			appointmentIDInt, err := strconv.Atoi(appointmentID);
+			taughtCourseIDInt, err := strconv.Atoi(taughtCourseID);
 			if err != nil {
-				panic("appointmentID is not an int");
+				panic("taughtCourseID is not an int");
 			}
-			appointment.ID = appointmentIDInt;
-			patchResponse := patch.EditAppointment(appointment);
+			taughtCourse.ID = taughtCourseIDInt;
+			patchResponse := patch.EditTaughtCourse(taughtCourse);
 			if (!patchResponse.IsSuccessful) {
 				fmt.Println(patchResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -578,15 +595,15 @@ func taughtCourses (w http.ResponseWriter, r *http.Request) {
 			if len(pathParts) < 4 {
 				panic("Need ID in path");
 			}
-			appointmentID := pathParts[3];
-			if (appointmentID == "") {
+			taughtCourseID := pathParts[3];
+			if (taughtCourseID == "") {
 				panic("Need ID in path");
 			}
-			appointmentIDInt, err := strconv.Atoi(appointmentID);
+			_, err := strconv.Atoi(taughtCourseID);
 			if err != nil {
-				panic("appointmentID is not an int");
+				panic("taughtCourseID is not an int");
 			}
-			deleteResponse := delete.DeleteAppointment(appointmentIDInt);
+			deleteResponse := delete.DeleteAppointment(taughtCourseID);
 			if (!deleteResponse.IsSuccessful) {
 				fmt.Println(deleteResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -605,20 +622,28 @@ func registrations (w http.ResponseWriter, r *http.Request) {
 	switch (r.Method) {
 		case http.MethodGet:
 			pathParts := strings.Split(r.URL.Path, "/");
-			appointmentID := pathParts[3];
-			if (appointmentID == "") {
-				json.NewEncoder(w).Encode(get.GetAppointments());
+			emailAndID := pathParts[3];
+			if (emailAndID == "") {
+				json.NewEncoder(w).Encode(get.GetRegistrations());
 				return;
 			}
-			json.NewEncoder(w).Encode(get.GetAppointmentByID(appointmentID));
+			emailAndIDParts := strings.Split(emailAndID, "-");
+			if (len(emailAndIDParts) < 2) {
+				panic("Need Taught Course ID in path");
+			}
+			_, err := strconv.Atoi(emailAndIDParts[1]);
+			if err != nil {
+				panic("taughtCourseID is not an int");
+			}
+			json.NewEncoder(w).Encode(get.GetRegistrationByEmailAndID(emailAndIDParts[0], emailAndIDParts[1]));
 			break;
 		case http.MethodPost:
-			var appointment models.Appointment;
-			err := json.NewDecoder(r.Body).Decode(&appointment);
+			var registration models.Registration;
+			err := json.NewDecoder(r.Body).Decode(&registration);
 			if (err != nil) {
-				panic("Appointment not structured properly: " + err.Error());
+				panic("Registration not structured properly: " + err.Error());
 			}
-			postResponse := post.AddAppointment(appointment);
+			postResponse := post.AddRegistration(registration);
 			if (!postResponse.IsSuccessful) {
 				fmt.Println(postResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -628,23 +653,28 @@ func registrations (w http.ResponseWriter, r *http.Request) {
 		case http.MethodPatch:
 			pathParts := strings.Split(r.URL.Path, "/");
 			if len(pathParts) < 4 {
-				panic("Need ID in path");
+				panic("Need Student Email and Taught Course ID in path");
 			}
-			appointmentID := pathParts[3];
-			if (appointmentID == "") {
-				panic("Need ID in path");
+			emailAndID := pathParts[3];
+			if (emailAndID == "") {
+				panic("Need Student Email and Taught Course ID in path");
 			}
-			var appointment models.Appointment;
-			err := json.NewDecoder(r.Body).Decode(&appointment);
-			if (err != nil) {
-				panic("Appointment not structured properly: " + err.Error());
+			emailAndIDParts := strings.Split(emailAndID, "-");
+			if (len(emailAndIDParts) < 2) {
+				panic("Need Taught Course ID in path");
 			}
-			appointmentIDInt, err := strconv.Atoi(appointmentID);
+			IDInt, err := strconv.Atoi(emailAndIDParts[1]);
 			if err != nil {
-				panic("appointmentID is not an int");
+				panic("taughtCourseID is not an int");
 			}
-			appointment.ID = appointmentIDInt;
-			patchResponse := patch.EditAppointment(appointment);
+			var registration models.Registration;
+			err = json.NewDecoder(r.Body).Decode(&registration);
+			if (err != nil) {
+				panic("Registration not structured properly: " + err.Error());
+			}
+			registration.StudentEmail = emailAndIDParts[0];
+			registration.TaughtCourseID = IDInt;
+			patchResponse := patch.EditRegistration(registration);
 			if (!patchResponse.IsSuccessful) {
 				fmt.Println(patchResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
@@ -652,19 +682,23 @@ func registrations (w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(patchResponse);
 			break;
 		case http.MethodDelete:
-			pathParts := strings.Split(r.URL.Path, "/")
+			pathParts := strings.Split(r.URL.Path, "/");
 			if len(pathParts) < 4 {
-				panic("Need ID in path");
+				panic("Need Student Email and Taught Course ID in path");
 			}
-			appointmentID := pathParts[3];
-			if (appointmentID == "") {
-				panic("Need ID in path");
+			emailAndID := pathParts[3];
+			if (emailAndID == "") {
+				panic("Need Student Email and Taught Course ID in path");
 			}
-			appointmentIDInt, err := strconv.Atoi(appointmentID);
+			emailAndIDParts := strings.Split(emailAndID, "-");
+			if (len(emailAndIDParts) < 2) {
+				panic("Need Taught Course ID in path");
+			}
+			_, err := strconv.Atoi(emailAndIDParts[1]);
 			if err != nil {
-				panic("appointmentID is not an int");
+				panic("taughtCourseID is not an int");
 			}
-			deleteResponse := delete.DeleteAppointment(appointmentIDInt);
+			deleteResponse := delete.DeleteRegistration(emailAndIDParts[0], emailAndIDParts[1]);
 			if (!deleteResponse.IsSuccessful) {
 				fmt.Println(deleteResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);
