@@ -8,6 +8,8 @@ export const USERS_API_URI = SERVER + "users/";
 export const USERS_BY_TOKEN_API_URI = USERS_API_URI + "by_token/";
 export const USERS_LOGIN_API_URI = USERS_API_URI + "login/";
 export const SEMESTERS_API_URI = SERVER + "semesters/";
+export const TAUGHT_COURSES_API_URI = SERVER + "taught-courses/";
+export const REGISTRATIONS_API_URI = SERVER + "registrations/";
 
 // Options
 export const ROLE_OPTIONS = [

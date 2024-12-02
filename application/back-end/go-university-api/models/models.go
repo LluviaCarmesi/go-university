@@ -63,6 +63,7 @@ type TaughtCourse struct {
 type Registration struct {
 	StudentEmail string `json:student_email`
 	TaughtCourseID int `json:taught_course_id`
+	CourseID string `json:course_id`
 	FinalGrade float32 `json:final_grade`
 	Status string `json:status`
 }

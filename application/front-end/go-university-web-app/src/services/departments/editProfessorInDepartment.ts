@@ -5,7 +5,7 @@ import isStatusGood from "../../utilities/isStatusGood";
 export default async function editProfessorInDepartment(item: IProfessorInDepartment) {
     let doesErrorExist = false;
     let errorMessage = "";
-    await fetch(`${PROFESSORS_IN_DEPARTMENTS_API_URI}${item.ProfessorEmail}`, {
+    await fetch(`${PROFESSORS_IN_DEPARTMENTS_API_URI}${item.ProfessorEmail}-${item.DepartmentID}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json"
