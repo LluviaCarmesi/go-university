@@ -1,12 +1,12 @@
-import { PROFESSORS_IN_DEPARTMENTS_API_URI } from "../../appSettings";
-import type IProfessorInDepartment from "../../interfaces/IProfessorToDepartment";
+import { REGISTRATIONS_API_URI } from "../../appSettings";
+import type IRegistration from "../../interfaces/IRegistration";
 import isStatusGood from "../../utilities/isStatusGood";
 
-export default async function deleteProfessorInDepartment(item: IProfessorInDepartment) {
+export default async function editRegistration(item: IRegistration) {
     let doesErrorExist = false;
     let errorMessage = "";
-    await fetch(`${PROFESSORS_IN_DEPARTMENTS_API_URI}${item.ProfessorEmail}-${item.DepartmentID}`, {
-        method: "DELETE",
+    await fetch(`${REGISTRATIONS_API_URI}${item.StudentEmail}-${item.TaughtCourseID}`, {
+        method: "PATCH",
         headers: {
             "Content-Type": "application/json"
         },

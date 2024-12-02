@@ -446,7 +446,7 @@ func GetRegistrations() []models.Registration {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	registrations := []models.Registration{};
-
+	courses := GetCourses();
 	results, err := dbConnection.Query(settings.GET_REGISTRATIONS_QUERY);
 	defer results.Close();
 
@@ -464,6 +464,12 @@ func GetRegistrations() []models.Registration {
 			&registration.Status);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
+		}
+		for i := 0; i < len(courses); i++ {
+			if (courses[i].ID == registration.TaughtCourseID) {
+				registration.CourseID = courses[i].Name
+			}
+			break;
 		}
 
 		registrations = append(registrations, registration);
