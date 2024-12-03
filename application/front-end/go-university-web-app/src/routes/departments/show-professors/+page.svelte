@@ -7,7 +7,7 @@
     import getProfessorsInDepartments from "../../../services/departments/getProfessorsInDepartments";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

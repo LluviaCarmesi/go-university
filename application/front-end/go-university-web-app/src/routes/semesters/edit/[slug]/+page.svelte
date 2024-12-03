@@ -11,7 +11,7 @@
     export let data;
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

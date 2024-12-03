@@ -32,7 +32,7 @@ export default async function getUserByToken(token: string) {
         }).
         then((result) => {
             if (!returnedResponse.isSuccessful) {
-                returnedResponse.errorMessage = result.response;
+                returnedResponse.errorMessage = result.ErrorMessage;
             }
             else {
                 returnedResponse.user = result;

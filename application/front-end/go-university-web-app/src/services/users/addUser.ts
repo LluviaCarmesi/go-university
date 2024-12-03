@@ -18,7 +18,7 @@ export default async function addUser(item: IUser) {
         })
         .then((result) => {
             if (doesErrorExist) {
-                errorMessage = result.response;
+                errorMessage = result.ErrorMessage;
             }
         })
         .catch((error) => {

@@ -9,7 +9,7 @@
     import formatTime from "../../../utilities/formatTime";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

@@ -25,7 +25,7 @@ export default async function getSemesterByName(id: string) {
         }).
         then((result) => {
             if (!returnedResponse.isSuccessful) {
-                returnedResponse.errorMessage = result.response;
+                returnedResponse.errorMessage = result.ErrorMessage;
             }
             else {
                 returnedResponse.semester.Name = result.Name;

@@ -21,7 +21,7 @@ export default async function getSemesters() {
         }).
         then((result) => {
             if (!returnedResponse.isSuccessful) {
-                returnedResponse.errorMessage = result.response;
+                returnedResponse.errorMessage = result.ErrorMessage;
             }
             else {
                 for (let i = 0; i < result.length; i++) {

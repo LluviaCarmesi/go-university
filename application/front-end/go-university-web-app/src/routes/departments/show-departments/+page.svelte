@@ -7,7 +7,7 @@
     import getDepartments from "../../../services/departments/getDepartments";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

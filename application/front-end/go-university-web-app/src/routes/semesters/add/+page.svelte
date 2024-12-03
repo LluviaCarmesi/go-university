@@ -8,7 +8,7 @@
     import addSemester from "../../../services/semesters/addSemester";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };
