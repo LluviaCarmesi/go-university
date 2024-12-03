@@ -4,9 +4,9 @@ This project is for my Database Systems class. It uses Go as the back-end and Sv
 
 # TODO
 
-- Make IsAdmin false for each route
+- For Registrations, check if total students for taught course is equal to max. If so, then put "Waiting Approval" in Status. If not, put "Registered"
+- Check current user role for each route
 - Add Delete Functionality for each item
 - Hide navigation links based on role
 - Encrypt Passwords
 - Test fully
-- Change result.response to result.ErrorMessage for error response

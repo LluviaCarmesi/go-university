@@ -14,9 +14,11 @@
     import createChoices from "../../../utilities/createChoices";
     import { DAY_OPTIONS } from "../../../appSettings";
     import NumberField from "../../../components/NumberField.svelte";
+    import { onMount } from "svelte";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };
@@ -56,6 +58,14 @@
     function handleTimePickerChange(event: any) {
         taughtCourseTextFields[event.target.id] = event.target.value;
     }
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     async function submitTaughtCourse() {
         isLoading = true;

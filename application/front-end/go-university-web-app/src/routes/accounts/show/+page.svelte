@@ -7,7 +7,7 @@
     import type IUser from "../../../interfaces/IUser";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

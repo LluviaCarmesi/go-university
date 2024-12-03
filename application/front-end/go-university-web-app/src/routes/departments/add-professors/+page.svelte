@@ -12,7 +12,7 @@
     import addProfessorInDepartment from "../../../services/departments/addProfessorInDepartment";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

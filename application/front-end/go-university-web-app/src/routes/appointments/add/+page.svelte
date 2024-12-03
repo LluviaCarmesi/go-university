@@ -11,7 +11,7 @@
     import DateTimePicker from "../../../components/DateTimePicker.svelte";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

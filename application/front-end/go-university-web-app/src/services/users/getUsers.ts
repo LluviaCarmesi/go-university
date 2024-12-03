@@ -21,7 +21,7 @@ export default async function getUsers() {
         }).
         then((result) => {
             if (!returnedResponse.isSuccessful) {
-                returnedResponse.errorMessage = result.response;
+                returnedResponse.errorMessage = result.ErrorMessage;
             }
             else {
                 returnedResponse.users = result;

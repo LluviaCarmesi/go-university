@@ -37,7 +37,7 @@ export default async function loginUser(item: ILogin) {
         })
         .then((result) => {
             if (!returnedResponse.isSuccessful) {
-                returnedResponse.errorMessage = result.response;
+                returnedResponse.errorMessage = result.ErrorMessage;
             }
             else {
                 setCookie("token", result.Token, 30);

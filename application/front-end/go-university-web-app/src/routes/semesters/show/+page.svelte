@@ -8,7 +8,7 @@
     import formatDateTime from "../../../utilities/formatDateTime";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

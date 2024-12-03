@@ -21,7 +21,7 @@ export default async function getProfessorsInDepartments() {
         }).
         then((result) => {
             if (!returnedResponse.isSuccessful) {
-                returnedResponse.errorMessage = result.response;
+                returnedResponse.errorMessage = result.ErrorMessage;
             }
             else {
                 returnedResponse.professorsInDepartments = result;

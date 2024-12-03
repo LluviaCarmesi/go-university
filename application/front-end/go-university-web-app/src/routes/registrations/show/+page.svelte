@@ -3,80 +3,76 @@
     import type IRole from "../../../interfaces/IRole";
     import "../../../styles/items.css";
     import "../../../styles/common.css";
-    import getUsers from "../../../services/users/getUsers";
-    import type IUser from "../../../interfaces/IUser";
+    import getRegistrations from "../../../services/registrations/getRegistrations";
+    import type IRegistration from "../../../interfaces/IRegistration";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };
     let isLoading = false;
     let errorMessage = "";
 
-    let users: IUser[] = [];
+    let registrations: IRegistration[] = [];
 
-    async function getUsersResponse() {
-        const usersResponse = await getUsers();
-        if (usersResponse.isSuccessful) {
-            users = usersResponse.users;
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
+
+    async function getRegistrationsResponse() {
+        const registrationsResponse = await getRegistrations();
+        if (registrationsResponse.isSuccessful) {
+            registrations = registrationsResponse.registrations;
         } else {
-            errorMessage = usersResponse.errorMessage;
+            errorMessage = registrationsResponse.errorMessage;
         }
         isLoading = false;
     }
-    getUsersResponse();
+    getRegistrationsResponse();
 </script>
 
 <Navigation {role} />
 
 <div id="itemsTable">
-    {#if users.length === 0}
+    {#if registrations.length === 0}
         <div class="descriptionContainer">
-            <span>No users as of now!</span>
+            <span>No registrations as of now!</span>
         </div>
     {:else}
         <table>
             <thead>
                 <tr>
-                    <th>Email</th>
-                    <th>Email Alias</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Phone Number</th>
-                    <th>Home Address</th>
-                    <th>Role</th>
-                    <th>Must Change Password</th>
+                    <th>Taught Course ID</th>
+                    <th>Student Email</th>
+                    <th>Course ID</th>
+                    <th>Final Grade</th>
+                    <th>Status</th>
                 </tr>
             </thead>
-            {#each users as user}
+            {#each registrations as registration}
                 <tbody>
                     <tr>
                         <td>
-                            <a href={"edit/" + user.Email}>
-                                <span>{user.Email}</span>
-                            </a>
+                            <span>{registration.TaughtCourseID}</span>
                         </td>
                         <td>
-                            <span>{user.EmailAlias}</span>
+                            <span>{registration.StudentEmail}</span>
                         </td>
                         <td>
-                            <span>{user.FirstName}</span>
+                            <span>{registration.CourseID}</span>
                         </td>
                         <td>
-                            <span>{user.LastName}</span>
+                            <span>{registration.FinalGrade}</span>
                         </td>
                         <td>
-                            <span>{user.PhoneNumber}</span>
-                        </td>
-                        <td>
-                            <span>{user.HomeAddress}</span>
-                        </td>
-                        <td>
-                            <span>{user.Role}</span>
-                        </td>
-                        <td>
-                            <span>{user.MustChangePW}</span>
+                            <span>{registration.Status}</span>
                         </td>
                     </tr>
                 </tbody>

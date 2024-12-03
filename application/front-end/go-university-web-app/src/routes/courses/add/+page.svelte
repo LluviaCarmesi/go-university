@@ -8,7 +8,7 @@
     import "../../../styles/common.css";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };

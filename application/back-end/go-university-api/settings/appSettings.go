@@ -73,7 +73,7 @@ const UPDATE_TAUGHT_COURSE_QUERY =
 const DELETE_TAUGHT_COURSE_QUERY = 
 	"DELETE FROM taught_courses WHERE id = ?";
 const GET_REGISTRATIONS_QUERY =
-	"SELECT id,student_email,taught_course_id,final_grade,status " +
+	"SELECT student_email,taught_course_id,final_grade,status " +
 	"FROM registrations";
 const INSERT_REGISTRATION_QUERY =
 	"INSERT INTO registrations (student_email,taught_course_id,final_grade,status) " +

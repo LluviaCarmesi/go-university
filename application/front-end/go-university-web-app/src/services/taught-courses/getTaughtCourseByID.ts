@@ -31,7 +31,7 @@ export default async function getTaughtCourseByID(id: string) {
         }).
         then((result) => {
             if (!returnedResponse.isSuccessful) {
-                returnedResponse.errorMessage = result.response;
+                returnedResponse.errorMessage = result.ErrorMessage;
             }
             else {
                 returnedResponse.taughtCourse = result;
