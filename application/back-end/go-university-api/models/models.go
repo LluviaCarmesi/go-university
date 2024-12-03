@@ -56,8 +56,9 @@ type TaughtCourse struct {
 	ProfessorEmail string `json:professor_email`
 	MaxStudents int `json:max_students`
 	Location string `json:location`
-	StartTime time.Time `json:start_time`
-	EndTime time.Time `json:end_time`
+	Day string `json:day`
+	StartTime string `json:start_time`
+	EndTime string `json:end_time`
 }
 
 type Registration struct {

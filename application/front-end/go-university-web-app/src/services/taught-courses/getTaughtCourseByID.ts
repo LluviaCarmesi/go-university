@@ -16,8 +16,9 @@ export default async function getTaughtCourseByID(id: string) {
             ProfessorEmail: "",
             Location: "",
             MaxStudents: 0,
-            StartTime: new Date(),
-            EndTime: new Date()
+            Day: "",
+            StartTime: "",
+            EndTime: ""
         },
         isSuccessful: false,
         errorMessage: ""
@@ -33,14 +34,7 @@ export default async function getTaughtCourseByID(id: string) {
                 returnedResponse.errorMessage = result.response;
             }
             else {
-                returnedResponse.taughtCourse.ID = result.ID;
-                returnedResponse.taughtCourse.CourseID = result.CourseID;
-                returnedResponse.taughtCourse.SemesterName = result.SemesterName;
-                returnedResponse.taughtCourse.ProfessorEmail = result.ProfessorEmail;
-                returnedResponse.taughtCourse.Location = result.Location;
-                returnedResponse.taughtCourse.MaxStudents = result.MaxStudents;
-                returnedResponse.taughtCourse.StartTime = new Date(result.StartTime);
-                returnedResponse.taughtCourse.EndTime = new Date(result.EndTime);
+                returnedResponse.taughtCourse = result;
             }
         })
         .catch((error) => {

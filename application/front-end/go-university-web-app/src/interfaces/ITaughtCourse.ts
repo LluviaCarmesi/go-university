@@ -5,6 +5,7 @@ export default interface ITaughtCourse {
 	ProfessorEmail: string;
 	MaxStudents: number;
 	Location: string;
-	StartTime: Date;
-	EndTime: Date;
+	Day: string;
+	StartTime: string;
+	EndTime: string;
 }

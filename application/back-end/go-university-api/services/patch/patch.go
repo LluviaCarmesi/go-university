@@ -251,9 +251,11 @@ func EditTaughtCourse(taughtCourse models.TaughtCourse) models.ServiceResponse {
 	_, err := dbConnection.ExecContext(
 		context.Background(),
 		query,
+		taughtCourse.CourseID,
 		taughtCourse.ProfessorEmail,
 		taughtCourse.MaxStudents,
 		taughtCourse.Location,
+		taughtCourse.Day,
 		taughtCourse.StartTime,
 		taughtCourse.EndTime,
 		taughtCourse.ID);

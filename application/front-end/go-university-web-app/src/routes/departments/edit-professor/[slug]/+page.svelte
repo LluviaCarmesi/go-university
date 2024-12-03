@@ -93,13 +93,13 @@
                 professorInDepartment.DepartmentName;
             professorInDepartmentCheckboxFields.IsLeader =
                 professorInDepartment.IsLeader;
-            getDepartmentsResponse();
         } else {
             errorMessage = professorInDepartmentResponse.errorMessage;
         }
         isLoading = false;
     }
     getProfessorInDepartmentByIDResponse();
+    getDepartmentsResponse();
 </script>
 
 <Navigation {role} />

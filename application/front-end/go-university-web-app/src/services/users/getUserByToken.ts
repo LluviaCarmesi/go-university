@@ -43,6 +43,7 @@ export default async function getUserByToken(token: string) {
             console.log(error);
         });
     if (!returnedResponse.user.Email) {
+        returnedResponse.isSuccessful = false;
         returnedResponse.errorMessage = strings.USER_DOESNT_EXIST_ERROR_MESSAGE;
     }
     return returnedResponse;

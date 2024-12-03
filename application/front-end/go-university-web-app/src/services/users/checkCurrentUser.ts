@@ -15,18 +15,21 @@ export default async function checkCurrentUser() {
         return currentRole;
     }
     const userByTokenResponse = await getUserByToken(token);
-    if (userByTokenResponse.isSuccessful) {
-        switch (userByTokenResponse.user.Role) {
-            case "student":
-                currentRole.isStudent = true;
-                break;
-            case "professor":
-                currentRole.isProfessor = true;
-                break;
-            case "admin":
-                currentRole.isAdmin = true;
-                break;
-        }
+    if (!userByTokenResponse.isSuccessful) {
+        window.open("/login", "_self");
+        return currentRole;
     }
+    switch (userByTokenResponse.user.Role) {
+        case "student":
+            currentRole.isStudent = true;
+            break;
+        case "professor":
+            currentRole.isProfessor = true;
+            break;
+        case "admin":
+            currentRole.isAdmin = true;
+            break;
+    }
+
     return currentRole;
 }

@@ -24,34 +24,14 @@
 <div id="itemsLinks">
     {#if role.isAdmin}
         <div>
-            <a href="courses/add">Add Course</a>
-        </div>
-        <div>
-            <a href="courses/show">Edit Courses</a>
-        </div>
-        <div>
             <a href="taught-courses/add">Add Taught Course</a>
         </div>
         <div>
             <a href="taught-courses/show">Edit Taught Course</a>
         </div>
-    {:else if role.isProfessor}
-        <div>
-            <a href="courses/stats">Stats</a>
-        </div>
     {:else if role.isStudent || role.isProfessor}
         <div>
-            <a href="taught-courses/grades">Grades</a>
-        </div>
-        <div>
-            <a href="taught-courses/schedule">Schedule</a>
-        </div>
-    {:else if role.isStudent}
-        <div>
-            <a href="registrations/add">Register for classes</a>
-        </div>
-        <div>
-            <a href="registrations/show">Edit Registrations</a>
+            <a href="/">Go Home</a>
         </div>
     {/if}
 </div>
