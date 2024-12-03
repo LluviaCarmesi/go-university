@@ -18,7 +18,7 @@ export default async function addTaughtCourse(item: ITaughtCourse) {
         })
         .then((result) => {
             if (doesErrorExist) {
-                errorMessage = result.response;
+                errorMessage = result.ErrorMessage;
             }
         })
         .catch((error) => {

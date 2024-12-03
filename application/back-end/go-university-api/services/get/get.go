@@ -395,11 +395,13 @@ func GetTaughtCourses() []models.TaughtCourse {
 		var taughtCourse models.TaughtCourse;
 
 		err := results.Scan(
+			&taughtCourse.ID,
 			&taughtCourse.CourseID,
 			&taughtCourse.SemesterName,
 			&taughtCourse.ProfessorEmail,
 			&taughtCourse.MaxStudents,
 			&taughtCourse.Location,
+			&taughtCourse.Day,
 			&taughtCourse.StartTime,
 			&taughtCourse.EndTime);
 		if (err != nil) {
@@ -433,6 +435,7 @@ func GetTaughtCourseByID(id string) models.TaughtCourse {
 			&taughtCourse.ProfessorEmail,
 			&taughtCourse.MaxStudents,
 			&taughtCourse.Location,
+			&taughtCourse.Day,
 			&taughtCourse.StartTime,
 			&taughtCourse.EndTime);
 		if (err != nil) {
@@ -446,7 +449,7 @@ func GetRegistrations() []models.Registration {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	registrations := []models.Registration{};
-	courses := GetCourses();
+	taughtCourses := GetTaughtCourses();
 	results, err := dbConnection.Query(settings.GET_REGISTRATIONS_QUERY);
 	defer results.Close();
 
@@ -465,9 +468,9 @@ func GetRegistrations() []models.Registration {
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
-		for i := 0; i < len(courses); i++ {
-			if (courses[i].ID == registration.TaughtCourseID) {
-				registration.CourseID = courses[i].Name
+		for i := 0; i < len(taughtCourses); i++ {
+			if (taughtCourses[i].ID == registration.TaughtCourseID) {
+				registration.CourseID = taughtCourses[i].CourseID;
 			}
 			break;
 		}

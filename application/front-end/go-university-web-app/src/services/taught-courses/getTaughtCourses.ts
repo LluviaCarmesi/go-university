@@ -24,19 +24,7 @@ export default async function getTaughtCourses() {
                 returnedResponse.errorMessage = result.response;
             }
             else {
-                for (let i = 0; i < result.length; i++) {
-                    const currentTaughtCourse = result[i];
-                    returnedResponse.taughtCourses.push({
-                        ID: currentTaughtCourse.Name,
-                        CourseID:currentTaughtCourse.CourseID,
-                        SemesterName:currentTaughtCourse.SemesterName,
-                        ProfessorEmail:currentTaughtCourse.ProfessorEmail,
-                        Location:currentTaughtCourse.Location,
-                        MaxStudents: currentTaughtCourse.MaxStudents,
-                        StartTime: new Date(currentTaughtCourse.StartTime),
-                        EndTime: new Date(currentTaughtCourse.EndTime),
-                    })
-                }
+                returnedResponse.taughtCourses = result;
             }
         })
         .catch((error) => {

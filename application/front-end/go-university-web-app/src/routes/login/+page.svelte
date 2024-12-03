@@ -5,9 +5,10 @@
     import type IRole from "../../interfaces/IRole";
     import loginUser from "../../services/users/loginUser";
     import "../../styles/common.css";
+    import "../../styles/items.css";
 
     let role: IRole = {
-        isAdmin: true,
+        isAdmin: false,
         isProfessor: false,
         isStudent: false,
     };
@@ -32,6 +33,7 @@
         if (!isSuccessful) {
             errorMessage = submitLoginResponse.errorMessage;
         } else {
+            window.open("/", "_self");
             errorMessage = "";
         }
         isLoading = false;
@@ -40,7 +42,7 @@
 
 <Navigation {role} />
 
-<div>
+<div id="itemForm">
     <TextField
         fieldLabel="Email"
         currentValue={login.Email}

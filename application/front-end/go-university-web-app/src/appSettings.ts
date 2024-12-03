@@ -26,3 +26,26 @@ export const ROLE_OPTIONS = [
         label: "Student"
     }
 ];
+
+export const DAY_OPTIONS = [
+    {
+        value: "Monday",
+        label: "Monday"
+    },
+    {
+        value: "Tuesday",
+        label: "Tuesday"
+    },
+    {
+        value: "Wednesday",
+        label: "Wednesday"
+    },
+    {
+        value: "Thursday",
+        label: "Thursday"
+    },
+    {
+        value: "Friday",
+        label: "Friday"
+    }
+];

@@ -211,6 +211,7 @@ func AddTaughtCourse(taughtCourse models.TaughtCourse) models.ServiceResponse {
 		taughtCourse.ProfessorEmail,
 		taughtCourse.MaxStudents,
 		taughtCourse.Location,
+		taughtCourse.Day,
 		taughtCourse.StartTime,
 		taughtCourse.EndTime);
 	if err != nil {

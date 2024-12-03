@@ -61,14 +61,14 @@ const UPDATE_SEMESTER_QUERY =
 const DELETE_SEMESTER_QUERY =
 	"DELETE FROM semesters WHERE name = ?";
 const GET_TAUGHT_COURSES_QUERY = 
-	"SELECT id,course_id,semester_name,professor_email,max_students,location,start_time,end_time" +
+	"SELECT id,course_id,semester_name,professor_email,max_students,location,day,start_time,end_time " +
 	"FROM taught_courses";
 const INSERT_TAUGHT_COURSE_QUERY =
-	"INSERT INTO taught_courses (course_id,semester_name,professer_email,max_students,location," +
-	"start_time,end_time) VALUES (?, ?, ?, ?, ?)";
+	"INSERT INTO taught_courses (course_id,semester_name,professor_email,max_students,location," +
+	"day,start_time,end_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 const UPDATE_TAUGHT_COURSE_QUERY =
-	"UPDATE taught_courses SET professor_email = ?, max_students = ?, location = ?, " +
-	"start_time = ?, end_time = ?" +
+	"UPDATE taught_courses SET course_id = ?, professor_email = ?, max_students = ?, location = ?, " +
+	"day = ?, start_time = ?, end_time = ? " +
 	"WHERE id = ?";
 const DELETE_TAUGHT_COURSE_QUERY = 
 	"DELETE FROM taught_courses WHERE id = ?";

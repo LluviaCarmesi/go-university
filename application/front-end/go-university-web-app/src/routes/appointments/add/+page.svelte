@@ -54,7 +54,9 @@
 
     function handleDateTimePickerChange(event: any) {
         appointmentTextFields[event.target.id] = event.target.value;
-        appointmentDateTimeFields[event.target.id] = new Date(event.target.value);
+        appointmentDateTimeFields[event.target.id] = new Date(
+            event.target.value,
+        );
     }
 
     async function submitAppointment() {
@@ -94,11 +96,6 @@
     {#if isSuccessful}
         <div class="successContainer">
             <span>Appointment was added successfully!</span>
-        </div>
-    {/if}
-    {#if !!errorMessage}
-        <div>
-            <span class="error">{errorMessage}</span>
         </div>
     {/if}
     <TextField
