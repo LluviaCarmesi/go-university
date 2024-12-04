@@ -44,7 +44,7 @@ export default async function loginUser(item: ILogin) {
             else {
                 returnedResponse.mustChangePW = result.MustChangePW;
                 setCookie("token", result.Token, 30);
-                setCookie("email", item.Email, 30);
+                setCookie("email", result.Email, 30);
             }
         })
         .catch((error) => {
