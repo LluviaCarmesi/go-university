@@ -29,9 +29,5 @@
         <div>
             <a href="taught-courses/show">Edit Taught Course</a>
         </div>
-    {:else if role.isStudent || role.isProfessor}
-        <div>
-            <a href="/">Go Home</a>
-        </div>
     {/if}
 </div>

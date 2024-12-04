@@ -603,7 +603,7 @@ func taughtCourses (w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				panic("taughtCourseID is not an int");
 			}
-			deleteResponse := delete.DeleteAppointment(taughtCourseID);
+			deleteResponse := delete.DeleteTaughtCourse(taughtCourseID);
 			if (!deleteResponse.IsSuccessful) {
 				fmt.Println(deleteResponse.IsSuccessful);
 				w.WriteHeader(http.StatusBadRequest);

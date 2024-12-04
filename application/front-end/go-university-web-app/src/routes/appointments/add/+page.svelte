@@ -9,6 +9,7 @@
     import getCookie from "../../../utilities/getCookie";
     import addAppointment from "../../../services/appointments/addAppointment";
     import DateTimePicker from "../../../components/DateTimePicker.svelte";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
 
     let role: IRole = {
         isAdmin: false,
@@ -25,6 +26,7 @@
         AdminEmail: "",
         StartTime: "",
         EndTime: "",
+        Description: "",
     };
 
     const appointmentNumberFields: any = {
@@ -42,6 +44,11 @@
 
     onMount(() => {
         appointmentTextFields.StudentEmail = getCookie("email");
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
     });
 
     function handleTextChange(event: any) {
@@ -68,6 +75,7 @@
             IsComplete: appointmentCheckboxFields.IsComplete,
             StartTime: appointmentDateTimeFields.StartTime,
             EndTime: appointmentDateTimeFields.EndTime,
+            Description: appointmentTextFields.Description,
         });
         isSuccessful = !addAppointmentResponse.doesErrorExist;
         if (!isSuccessful) {
@@ -103,7 +111,7 @@
         currentValue={appointmentTextFields.StudentEmail}
         onChangeTextField={handleTextChange}
         inputID="StudentEmail"
-        isDisabled={role.isStudent}
+        isDisabled={!role.isAdmin}
     />
     <TextField
         fieldLabel="Admin Email"
@@ -129,6 +137,14 @@
         currentValue={appointmentTextFields.EndTime}
         onChangeDateTimePicker={handleDateTimePickerChange}
         inputID="EndTime"
+    />
+    <TextField
+        fieldLabel="Description"
+        currentValue={appointmentTextFields.Description}
+        onChangeTextField={handleTextChange}
+        inputID="Description"
+        isDisabled={!role.isAdmin}
+        isExpandable={true}
     />
     <div class="actionsContainer">
         <a href="/appointments">Cancel</a>

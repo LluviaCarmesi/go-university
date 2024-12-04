@@ -194,7 +194,8 @@ func GetUsers() []models.User {
 			&user.LastName,
 			&user.PhoneNumber,
 			&user.HomeAddress,
-			&user.Role);
+			&user.Role,
+			&user.MustChangePW);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
@@ -227,7 +228,8 @@ func GetUserByToken(token string) models.User{
 			&user.LastName,
 			&user.PhoneNumber,
 			&user.HomeAddress,
-			&user.Role);
+			&user.Role,
+			&user.MustChangePW);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
@@ -257,7 +259,8 @@ func GetUserByEmail(email string) models.User{
 			&user.LastName,
 			&user.PhoneNumber,
 			&user.HomeAddress,
-			&user.Role);
+			&user.Role,
+			&user.MustChangePW);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
@@ -286,7 +289,8 @@ func GetAppointments() []models.Appointment {
 			&appointment.AdminEmail,
 			&appointment.IsComplete,
 			&appointment.StartTime,
-			&appointment.EndTime);
+			&appointment.EndTime,
+			&appointment.Description);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
@@ -317,7 +321,8 @@ func GetAppointmentByID(appointmentID string) models.Appointment {
 			&appointment.AdminEmail,
 			&appointment.IsComplete,
 			&appointment.StartTime,
-			&appointment.EndTime);
+			&appointment.EndTime,
+			&appointment.Description);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}

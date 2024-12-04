@@ -6,6 +6,8 @@
     import "../../../styles/common.css";
     import DatePicker from "../../../components/DatePicker.svelte";
     import addSemester from "../../../services/semesters/addSemester";
+    import { onMount } from "svelte";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
 
     let role: IRole = {
         isAdmin: false,
@@ -16,6 +18,14 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     const semesterTextFields: any = {
         Name: "",

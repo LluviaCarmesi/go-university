@@ -7,6 +7,7 @@
     import type IRegistration from "../../../interfaces/IRegistration";
     import checkCurrentUser from "../../../services/users/checkCurrentUser";
     import { onMount } from "svelte";
+    import deleteRegistration from "../../../services/registrations/deleteRegistration";
 
     let role: IRole = {
         isAdmin: false,
@@ -15,6 +16,7 @@
     };
     let isLoading = false;
     let errorMessage = "";
+    let isSuccessful = false;
 
     let registrations: IRegistration[] = [];
 
@@ -25,6 +27,19 @@
         }
         getRole();
     });
+
+    async function removeRegistration(registration: IRegistration) {
+        isLoading = true;
+        const deleteRegistrationResponse = await deleteRegistration(registration);
+        isSuccessful = !deleteRegistrationResponse.doesErrorExist;
+        if (!isSuccessful) {
+            errorMessage = deleteRegistrationResponse.errorMessage;
+        } else {
+            errorMessage = "";
+            window.open("show", "_self");
+        }
+        isLoading = false;
+    }
 
     async function getRegistrationsResponse() {
         const registrationsResponse = await getRegistrations();
@@ -54,6 +69,7 @@
                     <th>Course ID</th>
                     <th>Final Grade</th>
                     <th>Status</th>
+                    <th>Remove</th>
                 </tr>
             </thead>
             {#each registrations as registration}
@@ -73,6 +89,13 @@
                         </td>
                         <td>
                             <span>{registration.Status}</span>
+                        </td>
+                        <td>
+                            <button
+                                on:click={() =>
+                                    removeRegistration(registration)}
+                                >Remove</button
+                            >
                         </td>
                     </tr>
                 </tbody>

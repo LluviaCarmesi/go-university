@@ -33,7 +33,13 @@
             <a href="departments/add-professors">Add Professor Department</a>
         </div>
         <div>
-            <a href="departments/show-professors">Edit Professors Departments</a>
+            <a href="departments/show-professors">Edit Professors Departments</a
+            >
+        </div>
+    {:else if role.isProfessor}
+        <div>
+            <a href="departments/professor-departments">Edit Professors Departments</a
+            >
         </div>
     {/if}
 </div>

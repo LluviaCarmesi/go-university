@@ -6,6 +6,8 @@
     import type IRole from "../../../interfaces/IRole";
     import "../../../styles/items.css";
     import "../../../styles/common.css";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
 
     let role: IRole = {
         isAdmin: false,
@@ -16,6 +18,14 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     const course: ICourse = {
         ID: "",

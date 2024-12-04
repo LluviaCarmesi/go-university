@@ -41,6 +41,7 @@ type Appointment struct {
 	IsComplete bool `json:is_complete`
 	StartTime time.Time `json:start_time`
 	EndTime time.Time `json:end_time`
+	Description string `json:description`
 }
 
 type Semester struct {
@@ -78,4 +79,5 @@ type ServiceResponseLogin struct {
 	IsSuccessful bool `json:is_successful`
 	ErrorMessage string `json:error_message`
 	Token string `json:token`
+	MustChangePW bool `json:must_change_pw`
 }

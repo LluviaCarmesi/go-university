@@ -6,6 +6,7 @@
     import loginUser from "../../services/users/loginUser";
     import "../../styles/common.css";
     import "../../styles/items.css";
+    import getCookie from "../../utilities/getCookie";
 
     let role: IRole = {
         isAdmin: false,
@@ -33,6 +34,10 @@
         if (!isSuccessful) {
             errorMessage = submitLoginResponse.errorMessage;
         } else {
+            if (submitLoginResponse.mustChangePW) {
+                window.open(`accounts/edit/${getCookie("email")}`, "_self");
+                return;
+            }
             window.open("/", "_self");
             errorMessage = "";
         }

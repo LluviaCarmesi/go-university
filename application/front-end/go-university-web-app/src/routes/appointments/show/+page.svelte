@@ -6,6 +6,9 @@
     import "../../../styles/items.css";
     import "../../../styles/common.css";
     import formatDateTime from "../../../utilities/formatDateTime";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
+    import deleteAppointment from "../../../services/appointments/deleteAppointment";
 
     let role: IRole = {
         isAdmin: false,
@@ -14,8 +17,30 @@
     };
     let isLoading = false;
     let errorMessage = "";
+    let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let appointments: IAppointment[] = [];
+
+    async function removeAppointment(appointment: IAppointment) {
+        isLoading = true;
+        const deleteAppointmentResponse = await deleteAppointment(appointment);
+        isSuccessful = !deleteAppointmentResponse.doesErrorExist;
+        if (!isSuccessful) {
+            errorMessage = deleteAppointmentResponse.errorMessage;
+        } else {
+            errorMessage = "";
+            window.open("show", "_self");
+        }
+        isLoading = false;
+    }
 
     async function getAppointmentsResponse() {
         const appointmentsResponse = await getAppointments();
@@ -46,6 +71,8 @@
                     <th>Is Complete</th>
                     <th>Start Time</th>
                     <th>End Time</th>
+                    <th>Description</th>
+                    <th>Remove</th>
                 </tr>
             </thead>
             {#each appointments as appointment}
@@ -81,6 +108,15 @@
                                     true,
                                     true,
                                 )}</span
+                            >
+                        </td>
+                        <td>
+                            <span>{appointment.Description}</span>
+                        </td>
+                        <td>
+                            <button
+                                on:click={() => removeAppointment(appointment)}
+                                >Remove</button
                             >
                         </td>
                     </tr>

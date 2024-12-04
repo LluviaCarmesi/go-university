@@ -8,6 +8,8 @@
     import formatTime from "../../../utilities/formatTime";
     import addRegistration from "../../../services/registrations/addRegistration";
     import getCookie from "../../../utilities/getCookie";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
 
     let role: IRole = {
         isAdmin: false,
@@ -18,6 +20,14 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let taughtCourses: ITaughtCourse[] = [];
 

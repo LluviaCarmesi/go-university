@@ -104,6 +104,7 @@ func EditAppointment(appointment models.Appointment) models.ServiceResponse {
 		appointment.IsComplete,
 		appointment.StartTime,
 		appointment.EndTime,
+		appointment.Description,
 		appointment.ID);
 	if err != nil {
 		serviceResponse.IsSuccessful = false;
@@ -144,7 +145,8 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 			&receivedUser.LastName,
 			&receivedUser.PhoneNumber,
 			&receivedUser.HomeAddress,
-			&receivedUser.Role);
+			&receivedUser.Role,
+			&receivedUser.MustChangePW);
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
@@ -170,6 +172,7 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 		return serviceResponseLogin;
 	}
 	serviceResponseLogin.Token = string(newToken);
+	serviceResponseLogin.MustChangePW = receivedUser.MustChangePW;
 	log.Printf("updated users for the following id: %d", user.Email);
 
 	return serviceResponseLogin;
@@ -189,25 +192,44 @@ func EditUser(user models.User) models.ServiceResponse {
 	} else if (recievedUserWithEmailAlias.Email != user.Email) {
 		panic("Someone else has same email alias");
 	}
-
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 
-	query := settings.UPDATE_USER_INFORMATION_QUERY;
-	_, err := dbConnection.ExecContext(
-		context.Background(),
-		query,
-		user.EmailAlias,
-		user.FirstName,
-		user.LastName,
-		user.PhoneNumber,
-		user.HomeAddress,
-		user.MustChangePW,
-		user.Email);
-	if err != nil {
-		serviceResponse.IsSuccessful = false;
-		serviceResponse.ErrorMessage = "Unable to update user: " + err.Error();
-		return serviceResponse;
+	if (user.Password == "") {
+		query := settings.UPDATE_USER_INFORMATION_QUERY;
+		_, err := dbConnection.ExecContext(
+			context.Background(),
+			query,
+			user.EmailAlias,
+			user.FirstName,
+			user.LastName,
+			user.PhoneNumber,
+			user.HomeAddress,
+			user.MustChangePW,
+			user.Email);
+		if err != nil {
+			serviceResponse.IsSuccessful = false;
+			serviceResponse.ErrorMessage = "Unable to update user: " + err.Error();
+			return serviceResponse;
+		}
+	} else {	
+		query := settings.UPDATE_USER_QUERY;
+		_, err := dbConnection.ExecContext(
+			context.Background(),
+			query,
+			user.EmailAlias,
+			user.FirstName,
+			user.LastName,
+			user.Password,
+			user.PhoneNumber,
+			user.HomeAddress,
+			false,
+			user.Email);
+		if err != nil {
+			serviceResponse.IsSuccessful = false;
+			serviceResponse.ErrorMessage = "Unable to update user: " + err.Error();
+			return serviceResponse;
+		}
 	}
 	log.Printf("updated users for the following email: %d", user.Email);
 

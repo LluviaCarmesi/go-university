@@ -6,6 +6,9 @@
     import getSemesters from "../../../services/semesters/getSemesters";
     import type ISemester from "../../../interfaces/ISemester";
     import formatDateTime from "../../../utilities/formatDateTime";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
+    import deleteSemester from "../../../services/semesters/deleteSemester";
 
     let role: IRole = {
         isAdmin: false,
@@ -14,8 +17,30 @@
     };
     let isLoading = false;
     let errorMessage = "";
+    let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let semesters: ISemester[] = [];
+
+    async function removeSemester(semester: ISemester) {
+        isLoading = true;
+        const deleteSemesterResponse = await deleteSemester(semester);
+        isSuccessful = !deleteSemesterResponse.doesErrorExist;
+        if (!isSuccessful) {
+            errorMessage = deleteSemesterResponse.errorMessage;
+        } else {
+            errorMessage = "";
+            window.open("show", "_self");
+        }
+        isLoading = false;
+    }
 
     async function getSemestersResponse() {
         const semestersResponse = await getSemesters();
@@ -43,6 +68,7 @@
                     <th>Name</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th>Remove</th>
                 </tr>
             </thead>
             {#each semesters as semester}
@@ -69,6 +95,11 @@
                                     false,
                                     false,
                                 )}</span
+                            >
+                        </td>
+                        <td>
+                            <button on:click={() => removeSemester(semester)}
+                                >Remove</button
                             >
                         </td>
                     </tr>

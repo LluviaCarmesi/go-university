@@ -15,6 +15,8 @@
     import getTaughtCourseByID from "../../../../services/taught-courses/getTaughtCourseByID";
     import { DAY_OPTIONS } from "../../../../appSettings";
     import NumberField from "../../../../components/NumberField.svelte";
+    import { onMount } from "svelte";
+    import checkCurrentUser from "../../../../services/users/checkCurrentUser";
     export let data;
 
     let role: IRole = {
@@ -28,6 +30,14 @@
     let isSuccessful = false;
     let courses: ICourse[] = [];
     let semesters: ISemester[] = [];
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     const taughtCourseTextFields: any = {
         ProfessorEmail: "",

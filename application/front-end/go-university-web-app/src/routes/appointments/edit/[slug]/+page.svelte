@@ -9,6 +9,8 @@
     import getAppointmentByID from "../../../../services/appointments/getAppointmentByID";
     import formatDateTime from "../../../../utilities/formatDateTime";
     import DateTimePicker from "../../../../components/DateTimePicker.svelte";
+    import { onMount } from "svelte";
+    import checkCurrentUser from "../../../../services/users/checkCurrentUser";
     export let data;
 
     let role: IRole = {
@@ -21,11 +23,20 @@
     let errorMessage = "";
     let isSuccessful = false;
 
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
+
     const appointmentTextFields: any = {
         StudentEmail: "",
         AdminEmail: "",
         StartTime: "",
         EndTime: "",
+        Description: "",
     };
 
     const appointmentNumberFields: any = {
@@ -51,7 +62,9 @@
 
     function handleDateTimePickerChange(event: any) {
         appointmentTextFields[event.target.id] = event.target.value;
-        appointmentDateTimeFields[event.target.id] = new Date(event.target.value);
+        appointmentDateTimeFields[event.target.id] = new Date(
+            event.target.value,
+        );
     }
 
     async function submitAppointment() {
@@ -63,6 +76,7 @@
             IsComplete: appointmentCheckboxFields.IsComplete,
             StartTime: appointmentDateTimeFields.StartTime,
             EndTime: appointmentDateTimeFields.EndTime,
+            Description: appointmentTextFields.Description,
         });
         isSuccessful = !editCourseResponse.doesErrorExist;
         if (!isSuccessful) {
@@ -93,6 +107,7 @@
                 true,
                 false,
             );
+            appointmentTextFields.Description = appointment.Description;
         } else {
             errorMessage = appointmentResponse.errorMessage;
         }
@@ -130,7 +145,7 @@
         currentValue={appointmentTextFields.StudentEmail}
         onChangeTextField={handleTextChange}
         inputID="ID"
-        isDisabled={role.isStudent}
+        isDisabled={!role.isAdmin}
     />
     <TextField
         fieldLabel="Admin Email"
@@ -156,6 +171,14 @@
         currentValue={appointmentTextFields.EndTime}
         onChangeDateTimePicker={handleDateTimePickerChange}
         inputID="EndTime"
+    />
+    <TextField
+        fieldLabel="Description"
+        currentValue={appointmentTextFields.Description}
+        onChangeTextField={handleTextChange}
+        inputID="Description"
+        isDisabled={!role.isAdmin}
+        isExpandable={true}
     />
     <div class="actionsContainer">
         <a href="/appointments">Cancel</a>

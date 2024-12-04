@@ -2,7 +2,7 @@ import { USERS_API_URI } from "../../appSettings";
 import type IUser from "../../interfaces/IUser";
 import isStatusGood from "../../utilities/isStatusGood";
 
-export default async function deleteAppointment(item: IUser) {
+export default async function deleteUser(item: IUser) {
     let doesErrorExist = false;
     let errorMessage = "";
     await fetch(`${USERS_API_URI}${item.Email}`, {
