@@ -80,4 +80,5 @@ type ServiceResponseLogin struct {
 	ErrorMessage string `json:error_message`
 	Token string `json:token`
 	MustChangePW bool `json:must_change_pw`
+	Email string `json:email`
 }

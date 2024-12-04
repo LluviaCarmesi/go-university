@@ -128,7 +128,7 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 	encryptedPassword := user.Password;
 	receivedUser := models.User{};
 	
-	query := settings.GET_USERS_QUERY + " WHERE email = '" + user.Email + "' AND password = '" + encryptedPassword + "'";
+	query := settings.GET_USERS_QUERY + " WHERE (email = '" + user.Email +  "' OR email_alias = '" + user.Email + "') AND password = '" + encryptedPassword + "'";
 	results, err := dbConnection.Query(query);
 	defer results.Close();
 
@@ -165,7 +165,7 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 		context.Background(),
 		query,
 		string(newToken),
-		user.Email);
+		receivedUser.Email);
 	if err != nil {
 		serviceResponseLogin.IsSuccessful = false;
 		serviceResponseLogin.ErrorMessage = "Unable to login: " + err.Error();
@@ -173,7 +173,8 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 	}
 	serviceResponseLogin.Token = string(newToken);
 	serviceResponseLogin.MustChangePW = receivedUser.MustChangePW;
-	log.Printf("updated users for the following id: %d", user.Email);
+	serviceResponseLogin.Email = receivedUser.Email;
+	log.Printf("updated users for the following id: %d", receivedUser.Email);
 
 	return serviceResponseLogin;
 }
