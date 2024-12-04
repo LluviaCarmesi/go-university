@@ -8,6 +8,8 @@
     import editSemester from "../../../../services/semesters/editSemester";
     import getSemesterByName from "../../../../services/semesters/getSemesterByName";
     import formatDateTime from "../../../../utilities/formatDateTime";
+    import checkCurrentUser from "../../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
     export let data;
 
     let role: IRole = {
@@ -19,6 +21,14 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     const semesterTextFields: any = {
         Name: "",

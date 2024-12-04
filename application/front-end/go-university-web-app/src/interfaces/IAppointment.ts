@@ -5,4 +5,5 @@ export default interface IAppointment {
     IsComplete: boolean;
     StartTime: Date;
     EndTime: Date;
+    Description: string;
 }

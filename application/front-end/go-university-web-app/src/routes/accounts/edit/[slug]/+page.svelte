@@ -9,6 +9,8 @@
     import getUserByEmail from "../../../../services/users/getUserByEmail";
     import Dropdown from "../../../../components/Dropdown.svelte";
     import { ROLE_OPTIONS } from "../../../../appSettings";
+    import checkCurrentUser from "../../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
     export let data;
 
     let role: IRole = {
@@ -20,6 +22,14 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     const userTextFields: any = {
         Email: "",
@@ -137,7 +147,6 @@
         currentValue={userTextFields.Password}
         onChangeTextField={handleTextChange}
         inputID="Password"
-        isDisabled={!role.isAdmin}
     />
     <TextField
         fieldLabel="First Name"
@@ -170,15 +179,17 @@
         onDropdownChange={handleDropdownChange}
         inputID="Role"
         dropdownOptions={ROLE_OPTIONS}
+        isDisabled={!role.isAdmin}
     />
     <Checkbox
         fieldLabel="Must Change Password"
         currentValue={userCheckboxFields.MustChangePW}
         onChangeCheckbox={handleCheckboxChange}
         inputID="MustChangePW"
+        isDisabled={!role.isAdmin}
     />
     <div class="actionsContainer">
         <a href="/accounts">Cancel</a>
-        <button on:click={submitUser}>Submit Appointment</button>
+        <button on:click={submitUser}>Submit User</button>
     </div>
 </div>

@@ -11,6 +11,8 @@
     import Checkbox from "../../../../components/Checkbox.svelte";
     import editProfessorInDepartment from "../../../../services/departments/editProfessorInDepartment";
     import getDepartments from "../../../../services/departments/getDepartments";
+    import checkCurrentUser from "../../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
     export let data;
 
     let role: IRole = {
@@ -22,6 +24,13 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let departments: IDepartment[] = [];
 

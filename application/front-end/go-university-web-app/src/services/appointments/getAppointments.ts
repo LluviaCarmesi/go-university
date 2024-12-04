@@ -33,6 +33,7 @@ export default async function getAppointments() {
                         IsComplete: currentAppointment.IsComplete,
                         StartTime: new Date(currentAppointment.StartTime),
                         EndTime: new Date(currentAppointment.EndTime),
+                        Description: currentAppointment.Description
                     })
                 }
             }

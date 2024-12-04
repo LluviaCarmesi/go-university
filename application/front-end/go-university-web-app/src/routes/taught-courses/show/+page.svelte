@@ -3,10 +3,12 @@
     import type IRole from "../../../interfaces/IRole";
     import "../../../styles/items.css";
     import "../../../styles/common.css";
-    import formatDateTime from "../../../utilities/formatDateTime";
     import type ITaughtCourse from "../../../interfaces/ITaughtCourse";
     import getTaughtCourses from "../../../services/taught-courses/getTaughtCourses";
     import formatTime from "../../../utilities/formatTime";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
+    import deleteTaughtCourse from "../../../services/taught-courses/deleteTaughtCourse";
 
     let role: IRole = {
         isAdmin: false,
@@ -15,8 +17,30 @@
     };
     let isLoading = false;
     let errorMessage = "";
+    let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let taughtCourses: ITaughtCourse[] = [];
+
+    async function removeTaughtCourse(taughtCourse: ITaughtCourse) {
+        isLoading = true;
+        const deleteTaughtCourseResponse = await deleteTaughtCourse(taughtCourse);
+        isSuccessful = !deleteTaughtCourseResponse.doesErrorExist;
+        if (!isSuccessful) {
+            errorMessage = deleteTaughtCourseResponse.errorMessage;
+        } else {
+            errorMessage = "";
+            window.open("show", "_self");
+        }
+        isLoading = false;
+    }
 
     async function getTaughtCoursesResponse() {
         const getTaughtCoursesResponse = await getTaughtCourses();
@@ -50,6 +74,7 @@
                     <th>Day</th>
                     <th>Start Time</th>
                     <th>End Time</th>
+                    <th>Remove</th>
                 </tr>
             </thead>
             {#each taughtCourses as taughtCourse}
@@ -83,6 +108,13 @@
                         </td>
                         <td>
                             <span>{formatTime(taughtCourse.EndTime)}</span>
+                        </td>
+                        <td>
+                            <button
+                                on:click={() =>
+                                    removeTaughtCourse(taughtCourse)}
+                                >Remove</button
+                            >
                         </td>
                     </tr>
                 </tbody>

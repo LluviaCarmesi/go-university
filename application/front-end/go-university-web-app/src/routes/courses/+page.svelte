@@ -35,13 +35,16 @@
         <div>
             <a href="taught-courses/show">Edit Taught Course</a>
         </div>
+        <div>
+            <a href="registrations/show">Edit Registrations</a>
+        </div>
     {:else if role.isProfessor}
         <div>
             <a href="courses/stats">Stats</a>
         </div>
     {:else if role.isStudent || role.isProfessor}
         <div>
-            <a href="taught-courses/grades">Grades</a>
+            <a href="taught-courses/grades-status">Grades and Status</a>
         </div>
         <div>
             <a href="taught-courses/schedule">Schedule</a>

@@ -148,7 +148,8 @@ func AddAppointment(appointment models.Appointment) models.ServiceResponse {
 		appointment.AdminEmail,
 		appointment.IsComplete,
 		appointment.StartTime,
-		appointment.EndTime);
+		appointment.EndTime,
+		appointment.Description);
 	if err != nil {
 		serviceResponse.IsSuccessful = false;
 		serviceResponse.ErrorMessage = "Unable to insert appointment: " + err.Error();

@@ -5,6 +5,9 @@
     import "../../../styles/common.css";
     import type IProfessorInDepartment from "../../../interfaces/IProfessorToDepartment";
     import getProfessorsInDepartments from "../../../services/departments/getProfessorsInDepartments";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
+    import deleteProfessorInDepartment from "../../../services/departments/deleteProfessorInDepartment";
 
     let role: IRole = {
         isAdmin: false,
@@ -13,8 +16,33 @@
     };
     let isLoading = false;
     let errorMessage = "";
+    let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let professorsInDepartments: IProfessorInDepartment[] = [];
+
+    async function removeProfessorInDepartment(
+        professorInDepartment: IProfessorInDepartment,
+    ) {
+        isLoading = true;
+        const deleteProfessorInDepartmentResponse =
+            await deleteProfessorInDepartment(professorInDepartment);
+        isSuccessful = !deleteProfessorInDepartmentResponse.doesErrorExist;
+        if (!isSuccessful) {
+            errorMessage = deleteProfessorInDepartmentResponse.errorMessage;
+        } else {
+            errorMessage = "";
+            window.open("show-professors", "_self");
+        }
+        isLoading = false;
+    }
 
     async function getProfessorsInDepartmentsResponse() {
         const professorsInDepartmentsResponse =
@@ -44,28 +72,37 @@
                     <th>Professor Email</th>
                     <th>Department Name</th>
                     <th>Is Head</th>
+                    <th>Remove</th>
                 </tr>
             </thead>
-            {#each professorsInDepartments as professorsInDepartment}
+            {#each professorsInDepartments as professorInDepartment}
                 <tbody>
                     <tr>
                         <td>
                             <a
                                 href={"edit-professor/" +
-                                    professorsInDepartment.ProfessorEmail +
+                                    professorInDepartment.ProfessorEmail +
                                     "-" +
-                                    professorsInDepartment.DepartmentID}
+                                    professorInDepartment.DepartmentID}
                             >
                                 <span
-                                    >{professorsInDepartment.ProfessorEmail}</span
+                                    >{professorInDepartment.ProfessorEmail}</span
                                 >
                             </a>
                         </td>
                         <td>
-                            <span>{professorsInDepartment.DepartmentName}</span>
+                            <span>{professorInDepartment.DepartmentName}</span>
                         </td>
                         <td>
-                            <span>{professorsInDepartment.IsLeader}</span>
+                            <span>{professorInDepartment.IsLeader}</span>
+                        </td>
+                        <td>
+                            <button
+                                on:click={() =>
+                                    removeProfessorInDepartment(
+                                        professorInDepartment,
+                                    )}>Remove</button
+                            >
                         </td>
                     </tr>
                 </tbody>

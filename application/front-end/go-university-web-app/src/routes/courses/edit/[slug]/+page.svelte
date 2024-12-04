@@ -7,6 +7,8 @@
     import editCourse from "../../../../services/courses/editCourse";
     import "../../../../styles/items.css";
     import "../../../../styles/common.css";
+    import checkCurrentUser from "../../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
     export let data;
 
     let role: IRole = {
@@ -18,6 +20,14 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let course: ICourse = {
         ID: "",

@@ -8,6 +8,8 @@
     import Dropdown from "../../../components/Dropdown.svelte";
     import { ROLE_OPTIONS } from "../../../appSettings";
     import addUser from "../../../services/users/addUser";
+    import { onMount } from "svelte";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
 
     let role: IRole = {
         isAdmin: false,
@@ -18,6 +20,14 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     const userTextFields: any = {
         Email: "",
@@ -164,6 +174,6 @@
     />
     <div class="actionsContainer">
         <a href="/accounts">Cancel</a>
-        <button on:click={submitUser}>Submit Appointment</button>
+        <button on:click={submitUser}>Submit User</button>
     </div>
 </div>

@@ -25,30 +25,31 @@ const UPDATE_COURSE_QUERY =
 const DELETE_COURSE_QUERY =
 	"DELETE FROM courses WHERE id = ?";
 const GET_USERS_QUERY =
-	"SELECT email,email_alias,first_name,last_name,phone_number,home_address,role " +
+	"SELECT email,email_alias,first_name,last_name,phone_number,home_address,role,must_change_pw " +
 	"FROM users";
 const INSERT_USER_QUERY = 
 	"INSERT INTO users (email,email_alias,password,first_name,last_name,phone_number," +
 	"home_address,role,must_change_pw) " +
 	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+const UPDATE_USER_QUERY =
+	"UPDATE users SET email_alias = ?, first_name = ?, last_name = ?, password = ?, phone_number = ?, " +
+	"home_address = ?, must_change_pw = ? WHERE email = ?";
 const UPDATE_USER_INFORMATION_QUERY =
 	"UPDATE users SET email_alias = ?, first_name = ?, last_name = ?, phone_number = ?, " +
 	"home_address = ?, must_change_pw = ? WHERE email = ?";
-const UPDATE_USER_PASSWORD_QUERY =
-	"UPDATE users SET password = ? WHERE email = ?";
 const UPDATE_USER_TOKEN_QUERY =
 	"UPDATE users SET token = ? WHERE email = ?";
 const DELETE_USER_QUERY =
 	"DELETE FROM users WHERE email = ?";
 const GET_APPOINTMENTS_QUERY =
-	"SELECT id,student_email,admin_email,is_complete,start_time,end_time " +
+	"SELECT id,student_email,admin_email,is_complete,start_time,end_time,description " +
 	"FROM appointments";
 const INSERT_APPOINTMENT_QUERY =
-	"INSERT INTO appointments (student_email,admin_email,is_complete,start_time,end_time) " +
-	"VALUES (?, ?, ?, ?, ?)";
+	"INSERT INTO appointments (student_email,admin_email,is_complete,start_time,end_time,description) " +
+	"VALUES (?, ?, ?, ?, ?, ?)";
 const UPDATE_APPOINTMENT_QUERY =
 	"UPDATE appointments SET student_email = ?, admin_email = ?, is_complete = ?, start_time = ?, " +
-	"end_time = ? WHERE id = ?";
+	"end_time = ?, description = ? WHERE id = ?";
 const DELETE_APPOINTMENT_QUERY =
 	"DELETE FROM appointments WHERE id = ?";
 const GET_SEMESTERS_QUERY =

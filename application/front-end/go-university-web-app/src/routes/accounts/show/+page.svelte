@@ -5,6 +5,9 @@
     import "../../../styles/common.css";
     import getUsers from "../../../services/users/getUsers";
     import type IUser from "../../../interfaces/IUser";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
+    import deleteUser from "../../../services/users/deleteUser";
 
     let role: IRole = {
         isAdmin: false,
@@ -13,8 +16,30 @@
     };
     let isLoading = false;
     let errorMessage = "";
+    let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let users: IUser[] = [];
+
+    async function removeAccount(account: IUser) {
+        isLoading = true;
+        const deleteAppointmentResponse = await deleteUser(account);
+        isSuccessful = !deleteAppointmentResponse.doesErrorExist;
+        if (!isSuccessful) {
+            errorMessage = deleteAppointmentResponse.errorMessage;
+        } else {
+            errorMessage = "";
+            window.open("show", "_self");
+        }
+        isLoading = false;
+    }
 
     async function getUsersResponse() {
         const usersResponse = await getUsers();
@@ -47,6 +72,7 @@
                     <th>Home Address</th>
                     <th>Role</th>
                     <th>Must Change Password</th>
+                    <th>Remove</th>
                 </tr>
             </thead>
             {#each users as user}
@@ -77,6 +103,11 @@
                         </td>
                         <td>
                             <span>{user.MustChangePW}</span>
+                        </td>
+                        <td>
+                            <button on:click={() => removeAccount(user)}
+                                >Remove</button
+                            >
                         </td>
                     </tr>
                 </tbody>

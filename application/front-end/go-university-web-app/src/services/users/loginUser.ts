@@ -6,10 +6,12 @@ import setCookie from "../../utilities/setCookie";
 export default async function loginUser(item: ILogin) {
     const returnedResponse: {
         token: string,
+        mustChangePW: boolean,
         isSuccessful: boolean,
         errorMessage: string
     } = {
         token: "",
+        mustChangePW: false,
         isSuccessful: false,
         errorMessage: ""
     }
@@ -40,6 +42,7 @@ export default async function loginUser(item: ILogin) {
                 returnedResponse.errorMessage = result.ErrorMessage;
             }
             else {
+                returnedResponse.mustChangePW = result.MustChangePW;
                 setCookie("token", result.Token, 30);
                 setCookie("email", item.Email, 30);
             }

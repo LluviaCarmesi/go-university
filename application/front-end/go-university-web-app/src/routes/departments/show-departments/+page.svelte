@@ -5,6 +5,9 @@
     import "../../../styles/common.css";
     import type IDepartment from "../../../interfaces/IDepartment";
     import getDepartments from "../../../services/departments/getDepartments";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
+    import deleteDepartment from "../../../services/departments/deleteDepartment";
 
     let role: IRole = {
         isAdmin: false,
@@ -13,8 +16,30 @@
     };
     let isLoading = false;
     let errorMessage = "";
+    let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     let departments: IDepartment[] = [];
+
+    async function removeDepartment(department: IDepartment) {
+        isLoading = true;
+        const deleteDepartmentResponse = await deleteDepartment(department);
+        isSuccessful = !deleteDepartmentResponse.doesErrorExist;
+        if (!isSuccessful) {
+            errorMessage = deleteDepartmentResponse.errorMessage;
+        } else {
+            errorMessage = "";
+            window.open("show-departments", "_self");
+        }
+        isLoading = false;
+    }
 
     async function getDepartmentsResponse() {
         const departmentsResponse = await getDepartments();
@@ -41,6 +66,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Remove</th>
                 </tr>
             </thead>
             {#each departments as department}
@@ -53,6 +79,12 @@
                         </td>
                         <td>
                             <span>{department.Name}</span>
+                        </td>
+                        <td>
+                            <button
+                                on:click={() => removeDepartment(department)}
+                                >Remove</button
+                            >
                         </td>
                     </tr>
                 </tbody>

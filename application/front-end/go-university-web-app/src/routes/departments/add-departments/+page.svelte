@@ -5,6 +5,8 @@
     import "../../../styles/items.css";
     import "../../../styles/common.css";
     import addDepartment from "../../../services/departments/addDepartment";
+    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import { onMount } from "svelte";
 
     let role: IRole = {
         isAdmin: false,
@@ -15,6 +17,14 @@
     let isLoading = false;
     let errorMessage = "";
     let isSuccessful = false;
+
+    onMount(() => {
+        async function getRole() {
+            const checkCurrentUserResponse = await checkCurrentUser();
+            role = checkCurrentUserResponse;
+        }
+        getRole();
+    });
 
     const departmentNumberFields: any = {
         ID: 0,

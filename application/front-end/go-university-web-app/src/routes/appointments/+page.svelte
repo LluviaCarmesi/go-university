@@ -29,9 +29,5 @@
         <div>
             <a href="appointments/show">Edit Appointment</a>
         </div>
-    {:else if role.isProfessor}
-        <div>
-            <a href="/">Go Home</a>
-        </div>
     {/if}
 </div>
