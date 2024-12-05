@@ -4,8 +4,10 @@ import "back-end/models";
 //import "github.com/go-sql-driver/mysql";
 import "back-end/services";
 import "back-end/settings";
+import "back-end/services/get";
 import "log";
 import "context";
+import "back-end/utilities";
 
 func AddCourse(course models.Course) models.ServiceResponse {
 	serviceResponse := models.ServiceResponse{
@@ -103,6 +105,10 @@ func AddUser(user models.User) models.ServiceResponse {
 	}
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
+	encryptedPassword, passwordErr := utilities.EncryptPassword(user.Password);
+	if (passwordErr != nil) {
+		panic("Error encrypting password: " + passwordErr.Error());
+	}
 	
 	query := settings.INSERT_USER_QUERY;
 	results, err := dbConnection.ExecContext(
@@ -110,7 +116,7 @@ func AddUser(user models.User) models.ServiceResponse {
 		query,
 		user.Email,
 		user.EmailAlias,
-		user.Password,
+		encryptedPassword,
 		user.FirstName,
 		user.LastName,
 		user.PhoneNumber,
@@ -139,6 +145,15 @@ func AddAppointment(appointment models.Appointment) models.ServiceResponse {
 	}
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
+	appointments := get.GetAppointments();
+
+	for i := 0; i < len(appointments); i++ {
+		if (((appointment.StartTime.After(appointments[i].StartTime) || appointment.StartTime.Equal(appointments[i].StartTime)) && (appointment.StartTime.Before(appointments[i].EndTime) || appointment.StartTime.Equal(appointments[i].EndTime))) || (appointment.EndTime.After(appointments[i].StartTime) || appointment.EndTime.Equal(appointments[i].StartTime)) && (appointment.EndTime.Before(appointments[i].EndTime) || appointment.EndTime.Equal(appointments[i].EndTime))) {
+			serviceResponse.IsSuccessful = false;
+			serviceResponse.ErrorMessage = "Appointment time conflicts with another";
+			return serviceResponse;
+		}
+	}
 
 	query := settings.INSERT_APPOINTMENT_QUERY;
 	results, err := dbConnection.ExecContext(
@@ -237,7 +252,61 @@ func AddRegistration(registration models.Registration) models.ServiceResponse {
 	}
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
+	taughtCourses := get.GetTaughtCourses();
+	registrations := get.GetRegistrations();
+	currentSemester := "";
+	courses := get.GetCourses();
+	creditsThisSemester := 0;
+	registrationStatus := "";
+	taughtCourseID := 0;
+	currentStudentCount := 1;
+	maxStudentCount := 0;
+
+	for i:= 0; i < len(taughtCourses); i++ {
+		if (taughtCourses[i].ID == registration.TaughtCourseID) {
+			currentSemester = taughtCourses[i].SemesterName;
+			taughtCourseID = taughtCourses[i].ID;
+			maxStudentCount = taughtCourses[i].MaxStudents;
+			for j:= 0; j < len(courses); j++ {
+				if (courses[j].ID == taughtCourses[i].CourseID) {
+					creditsThisSemester += courses[j].Credits;
+				}
+			}
+		}
+	}
+
+	for i:= 0; i < len(registrations); i++ {
+		if (registrations[i].StudentEmail == registration.StudentEmail) {
+			for j:= 0; j < len(taughtCourses); j++ {
+				if (taughtCourses[j].ID == registrations[i].TaughtCourseID && currentSemester == taughtCourses[j].SemesterName) {
+					for h:= 0; h < len(courses); h++ {
+						if (courses[h].ID == taughtCourses[j].CourseID) {
+							creditsThisSemester += courses[h].Credits;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (creditsThisSemester >= 18) {
+		serviceResponse.IsSuccessful = false;
+		serviceResponse.ErrorMessage = "Can't add more than 18 credits in courses";
+		return serviceResponse;
+	}
 	
+	for i := 0; i < len (registrations); i++ {
+		if (registrations[i].TaughtCourseID == taughtCourseID) {
+			currentStudentCount++;
+		}
+	}
+
+	if (currentStudentCount > maxStudentCount) {
+		registrationStatus = "Waiting Approval";
+	} else {
+		registrationStatus = "Registered";
+	}
+
 	query := settings.INSERT_REGISTRATION_QUERY;
 	results, err := dbConnection.ExecContext(
 		context.Background(),
@@ -245,7 +314,7 @@ func AddRegistration(registration models.Registration) models.ServiceResponse {
 		registration.StudentEmail,
 		registration.TaughtCourseID,
 		registration.FinalGrade,
-		registration.Status);
+		registrationStatus);
 	if err != nil {
 		serviceResponse.IsSuccessful = false;
 		serviceResponse.ErrorMessage = "Unable to insert registrations: " + err.Error();

@@ -137,10 +137,10 @@
 
 <div id="itemForm">
     <div class="mainHeadingContainer">
-        <h2>Add an Taught Course</h2>
+        <h2>Edit the Taught Course</h2>
     </div>
     <div class="descriptionContainer">
-        <span>Add a taught course using the form below! </span>
+        <span>Edit the taught course using the form below! </span>
     </div>
     {#if !!errorMessage}
         <div class="errorContainer">
@@ -149,7 +149,7 @@
     {/if}
     {#if isSuccessful}
         <div class="successContainer">
-            <span>Taught Course was added successfully!</span>
+            <span>Taught Course was modified successfully!</span>
         </div>
     {/if}
     {#if !!errorMessage}

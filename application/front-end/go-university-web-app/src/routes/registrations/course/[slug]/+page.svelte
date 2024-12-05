@@ -1,13 +1,14 @@
 <script lang="ts">
-    import Navigation from "../../../components/Navigation.svelte";
-    import type IRole from "../../../interfaces/IRole";
-    import "../../../styles/items.css";
-    import "../../../styles/common.css";
-    import getRegistrations from "../../../services/registrations/getRegistrations";
-    import type IRegistration from "../../../interfaces/IRegistration";
-    import checkCurrentUser from "../../../services/users/checkCurrentUser";
+    import Navigation from "../../../../components/Navigation.svelte";
+    import type IRole from "../../../../interfaces/IRole";
+    import "../../../../styles/items.css";
+    import "../../../../styles/common.css";
+    import type IRegistration from "../../../../interfaces/IRegistration";
+    import checkCurrentUser from "../../../../services/users/checkCurrentUser";
     import { onMount } from "svelte";
-    import deleteRegistration from "../../../services/registrations/deleteRegistration";
+    import deleteRegistration from "../../../../services/registrations/deleteRegistration";
+    import getRegistrationsByProfessorEmailAndID from "../../../../services/registrations/getRegistrationsByProfessorEmailAndID";
+    export let data;
 
     let role: IRole = {
         isAdmin: false,
@@ -39,7 +40,7 @@
             errorMessage = deleteRegistrationResponse.errorMessage;
         } else {
             errorMessage = "";
-            window.open("show", "_self");
+            window.open(`course/${data.id}`, "_self");
         }
         isLoading = false;
     }
@@ -53,7 +54,8 @@
     }
 
     async function getRegistrationsResponse() {
-        const registrationsResponse = await getRegistrations();
+        const registrationsResponse =
+            await getRegistrationsByProfessorEmailAndID(data.id);
         if (registrationsResponse.isSuccessful) {
             registrations = registrationsResponse.registrations;
             calculateAverage();
@@ -76,7 +78,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Overall GPA</th>
+                    <th>Average</th>
                     <th># of A</th>
                     <th># of A-</th>
                     <th># of B+</th>
@@ -154,7 +156,14 @@
                 <tbody>
                     <tr>
                         <td>
-                            <span>{registration.TaughtCourseID}</span>
+                            <a
+                                href={"/registrations/edit/" +
+                                    registration.StudentEmail +
+                                    "-" +
+                                    registration.TaughtCourseID}
+                            >
+                                <span>{registration.TaughtCourseID}</span>
+                            </a>
                         </td>
                         <td>
                             <span>{registration.StudentEmail}</span>

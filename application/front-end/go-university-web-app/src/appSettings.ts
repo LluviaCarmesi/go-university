@@ -10,6 +10,7 @@ export const USERS_LOGIN_API_URI = USERS_API_URI + "login/";
 export const SEMESTERS_API_URI = SERVER + "semesters/";
 export const TAUGHT_COURSES_API_URI = SERVER + "taught-courses/";
 export const REGISTRATIONS_API_URI = SERVER + "registrations/";
+export const REGISTRATIONS_PROFESSOR_API_URI = SERVER + "registrations/professor/";
 
 // Options
 export const ROLE_OPTIONS = [
@@ -49,3 +50,14 @@ export const DAY_OPTIONS = [
         label: "Friday"
     }
 ];
+
+export const REGISTRATION_STATUS_OPTIONS = [
+    {
+        value: "Waiting Approval",
+        label: "Waiting Approval"
+    },
+    {
+        value: "Registered",
+        label: "Registered"
+    }
+]
