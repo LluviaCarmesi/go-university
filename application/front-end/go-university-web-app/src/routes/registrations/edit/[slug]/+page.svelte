@@ -35,6 +35,7 @@
         StudentEmail: "",
         FinalGrade: "",
         CourseID: "",
+        SemesterName: "",
     };
 
     const registrationNumberFields: any = {
@@ -59,6 +60,7 @@
             StudentEmail: registrationTextFields.StudentEmail,
             FinalGrade: parseFloat(registrationTextFields.FinalGrade),
             CourseID: registrationTextFields.CourseID,
+            SemesterName: registrationTextFields.SemesterName,
             TaughtCourseID: registrationNumberFields.TaughtCourseID,
             Status: registrationDropdownFields.Status,
         });
@@ -126,6 +128,13 @@
         currentValue={registrationTextFields.CourseID}
         onChangeTextField={handleTextChange}
         inputID="CourseID"
+        isDisabled={true}
+    />
+    <TextField
+        fieldLabel="SemesterName"
+        currentValue={registrationTextFields.SemesterName}
+        onChangeTextField={handleTextChange}
+        inputID="SemesterName"
         isDisabled={true}
     />
     <Dropdown

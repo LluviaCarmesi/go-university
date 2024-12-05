@@ -66,6 +66,7 @@ type Registration struct {
 	StudentEmail string `json:student_email`
 	TaughtCourseID int `json:taught_course_id`
 	CourseID string `json:course_id`
+	SemesterName string `json:semester_name`
 	FinalGrade float32 `json:final_grade`
 	Status string `json:status`
 }

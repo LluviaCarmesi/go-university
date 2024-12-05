@@ -9,6 +9,7 @@
     import checkCurrentUser from "../../../services/users/checkCurrentUser";
     import { onMount } from "svelte";
     import deleteAppointment from "../../../services/appointments/deleteAppointment";
+    import getCookie from "../../../utilities/getCookie";
 
     let role: IRole = {
         isAdmin: false,
@@ -23,6 +24,7 @@
         async function getRole() {
             const checkCurrentUserResponse = await checkCurrentUser();
             role = checkCurrentUserResponse;
+            getAppointmentsResponse();
         }
         getRole();
     });
@@ -45,13 +47,19 @@
     async function getAppointmentsResponse() {
         const appointmentsResponse = await getAppointments();
         if (appointmentsResponse.isSuccessful) {
-            appointments = appointmentsResponse.appointments;
+            if (role.isAdmin) {
+                appointments = appointmentsResponse.appointments;
+            } else {
+                appointments = appointmentsResponse.appointments.filter(
+                    (appointment) =>
+                        appointment.StudentEmail === getCookie("email"),
+                );
+            }
         } else {
             errorMessage = appointmentsResponse.errorMessage;
         }
         isLoading = false;
     }
-    getAppointmentsResponse();
 </script>
 
 <Navigation {role} />

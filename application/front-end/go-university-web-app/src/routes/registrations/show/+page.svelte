@@ -8,6 +8,7 @@
     import checkCurrentUser from "../../../services/users/checkCurrentUser";
     import { onMount } from "svelte";
     import deleteRegistration from "../../../services/registrations/deleteRegistration";
+    import getCookie from "../../../utilities/getCookie";
 
     let role: IRole = {
         isAdmin: false,
@@ -26,6 +27,7 @@
         async function getRole() {
             const checkCurrentUserResponse = await checkCurrentUser();
             role = checkCurrentUserResponse;
+            getRegistrationsResponse();
         }
         getRole();
     });
@@ -55,14 +57,20 @@
     async function getRegistrationsResponse() {
         const registrationsResponse = await getRegistrations();
         if (registrationsResponse.isSuccessful) {
-            registrations = registrationsResponse.registrations;
+            if (role.isAdmin) {
+                registrations = registrationsResponse.registrations;
+            } else {
+                registrations = registrationsResponse.registrations.filter(
+                    (registration) =>
+                        registration.StudentEmail === getCookie("email"),
+                );
+            }
             calculateAverage();
         } else {
             errorMessage = registrationsResponse.errorMessage;
         }
         isLoading = false;
     }
-    getRegistrationsResponse();
 </script>
 
 <Navigation {role} />
@@ -73,78 +81,92 @@
             <span>No registrations as of now!</span>
         </div>
     {:else}
-        <table>
-            <thead>
-                <tr>
-                    <th>Overall GPA</th>
-                    <th># of A</th>
-                    <th># of A-</th>
-                    <th># of B+</th>
-                    <th># of B</th>
-                    <th># of B-</th>
-                    <th># of C+</th>
-                    <th># of C</th>
-                    <th># of C-</th>
-                    <th># of D+</th>
-                    <th># of D</th>
-                    <th># of D-</th>
-                    <th># of F</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{average}</td>
-                    <td>{grades.filter((grade) => grade >= 95).length}</td>
-                    <td
-                        >{grades.filter((grade) => grade < 95 && grade >= 90)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 90 && grade >= 87)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 87 && grade >= 84)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 84 && grade >= 80)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 80 && grade >= 77)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 77 && grade >= 74)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 74 && grade >= 70)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 70 && grade >= 67)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 67 && grade >= 64)
-                            .length}</td
-                    >
-                    <td
-                        >{grades.filter((grade) => grade < 64 && grade >= 60)
-                            .length}</td
-                    >
-                    <td>{grades.filter((grade) => grade < 60).length}</td>
-                </tr>
-            </tbody>
-        </table><br>
+        {#if role.isStudent}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Overall GPA</th>
+                        <th># of A</th>
+                        <th># of A-</th>
+                        <th># of B+</th>
+                        <th># of B</th>
+                        <th># of B-</th>
+                        <th># of C+</th>
+                        <th># of C</th>
+                        <th># of C-</th>
+                        <th># of D+</th>
+                        <th># of D</th>
+                        <th># of D-</th>
+                        <th># of F</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{average.toFixed(2)}</td>
+                        <td>{grades.filter((grade) => grade >= 95).length}</td>
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 95 && grade >= 90,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 90 && grade >= 87,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 87 && grade >= 84,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 84 && grade >= 80,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 80 && grade >= 77,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 77 && grade >= 74,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 74 && grade >= 70,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 70 && grade >= 67,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 67 && grade >= 64,
+                            ).length}</td
+                        >
+                        <td
+                            >{grades.filter(
+                                (grade) => grade < 64 && grade >= 60,
+                            ).length}</td
+                        >
+                        <td>{grades.filter((grade) => grade < 60).length}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+        {/if}
         <table>
             <thead>
                 <tr>
                     <th>Taught Course ID</th>
                     <th>Student Email</th>
                     <th>Course ID</th>
+                    <th>Semester</th>
                     <th>Final Grade</th>
                     <th>Status</th>
                     <th>Remove</th>
@@ -161,6 +183,9 @@
                         </td>
                         <td>
                             <span>{registration.CourseID}</span>
+                        </td>
+                        <td>
+                            <span>{registration.SemesterName}</span>
                         </td>
                         <td>
                             <span>{registration.FinalGrade}</span>

@@ -516,8 +516,9 @@ func GetRegistrations() []models.Registration {
 		for i := 0; i < len(taughtCourses); i++ {
 			if (taughtCourses[i].ID == registration.TaughtCourseID) {
 				registration.CourseID = taughtCourses[i].CourseID;
+				registration.SemesterName = taughtCourses[i].SemesterName
+				break;
 			}
-			break;
 		}
 
 		registrations = append(registrations, registration);
@@ -553,6 +554,7 @@ func GetRegistrationByEmailAndID(email string, taughtCourseID string) models.Reg
 		for i := 0; i < len(taughtCourses); i++ {
 			if (taughtCourses[i].ID == registration.TaughtCourseID) {
 				registration.CourseID = taughtCourses[i].CourseID;
+				registration.SemesterName = taughtCourses[i].SemesterName
 			}
 			break;
 		}
