@@ -36,10 +36,5 @@
             <a href="departments/show-professors">Edit Professors Departments</a
             >
         </div>
-    {:else if role.isProfessor}
-        <div>
-            <a href="departments/professor-departments">Edit Professors Departments</a
-            >
-        </div>
     {/if}
 </div>

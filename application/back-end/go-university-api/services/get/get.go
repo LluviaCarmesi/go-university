@@ -4,6 +4,7 @@ import "back-end/models";
 //import "github.com/go-sql-driver/mysql";
 import "back-end/services";
 import "back-end/settings";
+import "strconv";
 
 func GetCourses() []models.Course {
 	dbConnection := services.ConnectToDB();
@@ -192,6 +193,7 @@ func GetUsers() []models.User {
 			&user.EmailAlias,
 			&user.FirstName,
 			&user.LastName,
+			&user.Password,
 			&user.PhoneNumber,
 			&user.HomeAddress,
 			&user.Role,
@@ -226,6 +228,7 @@ func GetUserByToken(token string) models.User{
 			&user.EmailAlias,
 			&user.FirstName,
 			&user.LastName,
+			&user.Password,
 			&user.PhoneNumber,
 			&user.HomeAddress,
 			&user.Role,
@@ -257,6 +260,7 @@ func GetUserByEmail(email string) models.User{
 			&user.EmailAlias,
 			&user.FirstName,
 			&user.LastName,
+			&user.Password,
 			&user.PhoneNumber,
 			&user.HomeAddress,
 			&user.Role,
@@ -450,6 +454,42 @@ func GetTaughtCourseByID(id string) models.TaughtCourse {
 	return taughtCourse;
 }
 
+func GetTaughtCoursesByProfessorEmail(email string) []models.TaughtCourse {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	taughtCourses := []models.TaughtCourse{};
+
+	query := settings.GET_TAUGHT_COURSES_QUERY + " WHERE professor_email = '" + email + "'"
+	results, err := dbConnection.Query(query);
+	defer results.Close();
+
+	if (err != nil) {
+		panic("Error getting data: " + err.Error());
+	}
+
+	for results.Next() {
+		var taughtCourse models.TaughtCourse;
+
+		err := results.Scan(
+			&taughtCourse.ID,
+			&taughtCourse.CourseID,
+			&taughtCourse.SemesterName,
+			&taughtCourse.ProfessorEmail,
+			&taughtCourse.MaxStudents,
+			&taughtCourse.Location,
+			&taughtCourse.Day,
+			&taughtCourse.StartTime,
+			&taughtCourse.EndTime);
+		if (err != nil) {
+			panic("Error scanning row: " + err.Error());
+		}
+		
+		taughtCourses = append(taughtCourses, taughtCourse);
+	}
+
+	return taughtCourses;
+}
+
 func GetRegistrations() []models.Registration {
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
@@ -490,6 +530,7 @@ func GetRegistrationByEmailAndID(email string, taughtCourseID string) models.Reg
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
 	registration := models.Registration{};
+	taughtCourses := GetTaughtCourses();
 
 	query := settings.GET_REGISTRATIONS_QUERY + " WHERE student_email = '" + email + "' AND taught_course_id = '" + taughtCourseID + "'";
 	results, err := dbConnection.Query(query);
@@ -508,6 +549,28 @@ func GetRegistrationByEmailAndID(email string, taughtCourseID string) models.Reg
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
+
+		for i := 0; i < len(taughtCourses); i++ {
+			if (taughtCourses[i].ID == registration.TaughtCourseID) {
+				registration.CourseID = taughtCourses[i].CourseID;
+			}
+			break;
+		}
 	}
 	return registration;
+}
+
+func GetRegistrationsByProfessorEmailAndTaughtCourseID(email string, taughtCourseID string) []models.Registration {
+	dbConnection := services.ConnectToDB();
+	defer dbConnection.Close();
+	registrations := GetRegistrations();
+	registrationsForProfessor := []models.Registration{};
+
+	for i :=0; i < len(registrations); i++ {
+		if (strconv.Itoa(registrations[i].TaughtCourseID) == taughtCourseID) {
+			registrationsForProfessor = append(registrationsForProfessor, registrations[i]);
+		}
+	}
+
+	return registrationsForProfessor;
 }

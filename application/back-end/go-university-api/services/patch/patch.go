@@ -9,6 +9,7 @@ import "math/rand";
 import "log";
 import "context";
 import "time";
+import "back-end/utilities";
 
 func EditCourse(course models.Course) models.ServiceResponse {
 	serviceResponse := models.ServiceResponse{
@@ -117,7 +118,6 @@ func EditAppointment(appointment models.Appointment) models.ServiceResponse {
 }
 
 func LoginUser(user models.User) models.ServiceResponseLogin {
-	rand.Seed(time.Now().UnixNano());
 	serviceResponseLogin := models.ServiceResponseLogin{
 		IsSuccessful: true,
 		ErrorMessage: "",
@@ -125,10 +125,9 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 	}
 	dbConnection := services.ConnectToDB();
 	defer dbConnection.Close();
-	encryptedPassword := user.Password;
 	receivedUser := models.User{};
-	
-	query := settings.GET_USERS_QUERY + " WHERE (email = '" + user.Email +  "' OR email_alias = '" + user.Email + "') AND password = '" + encryptedPassword + "'";
+
+	query := settings.GET_USERS_QUERY + " WHERE (email = '" + user.Email +  "' OR email_alias = '" + user.Email + "')";
 	results, err := dbConnection.Query(query);
 	defer results.Close();
 
@@ -143,6 +142,7 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 			&receivedUser.EmailAlias,
 			&receivedUser.FirstName,
 			&receivedUser.LastName,
+			&receivedUser.Password,
 			&receivedUser.PhoneNumber,
 			&receivedUser.HomeAddress,
 			&receivedUser.Role,
@@ -154,7 +154,11 @@ func LoginUser(user models.User) models.ServiceResponseLogin {
 	if (receivedUser.Email == "") {
 		panic("No user found");
 	}
+	if (!utilities.DoesPasswordMatch(user.Password, receivedUser.Password)) {
+		panic("Passwords don't match");
+	}
 
+	rand.Seed(time.Now().UnixNano());
 	newToken := make([]byte, 255);
 	for i := 0; i < 255; i++ {
 		newToken[i] = settings.ALPHABET[rand.Intn(len(settings.ALPHABET))];
@@ -213,7 +217,11 @@ func EditUser(user models.User) models.ServiceResponse {
 			serviceResponse.ErrorMessage = "Unable to update user: " + err.Error();
 			return serviceResponse;
 		}
-	} else {	
+	} else {
+		encryptedPassword, passwordErr := utilities.EncryptPassword(user.Password);
+		if (passwordErr != nil) {
+			panic("Error encrypting password: " + passwordErr.Error());
+		}
 		query := settings.UPDATE_USER_QUERY;
 		_, err := dbConnection.ExecContext(
 			context.Background(),
@@ -221,7 +229,7 @@ func EditUser(user models.User) models.ServiceResponse {
 			user.EmailAlias,
 			user.FirstName,
 			user.LastName,
-			user.Password,
+			encryptedPassword,
 			user.PhoneNumber,
 			user.HomeAddress,
 			false,

@@ -9,6 +9,7 @@ const APPOINTMENTS_PATH = API_ROOT + "appointments/";
 const SEMESTERS_PATH = API_ROOT + "semesters/";
 const TAUGHT_COURSES_PATH = API_ROOT + "taught-courses/";
 const REGISTRATIONS_PATH = API_ROOT + "registrations/";
+const REGISTRATIONS_PROFESSOR_PATH = API_ROOT + "registrations/professor/";
 const DEPARTMENTS_PATH = API_ROOT + "departments/";
 const PROFESSORS_IN_DEPARTMENTS_PATH = API_ROOT + "professors-in-departments/";
 const USERS_LOGIN_PATH = USERS_PATH + "login/";
@@ -25,7 +26,7 @@ const UPDATE_COURSE_QUERY =
 const DELETE_COURSE_QUERY =
 	"DELETE FROM courses WHERE id = ?";
 const GET_USERS_QUERY =
-	"SELECT email,email_alias,first_name,last_name,phone_number,home_address,role,must_change_pw " +
+	"SELECT email,email_alias,first_name,last_name,password,phone_number,home_address,role,must_change_pw " +
 	"FROM users";
 const INSERT_USER_QUERY = 
 	"INSERT INTO users (email,email_alias,password,first_name,last_name,phone_number," +
@@ -80,7 +81,7 @@ const INSERT_REGISTRATION_QUERY =
 	"INSERT INTO registrations (student_email,taught_course_id,final_grade,status) " +
 	"VALUES (?, ?, ?, ?)";
 const UPDATE_REGISTRATION_QUERY =
-	"UPDATE registrations SET final_grade = ?, status = ?, " +
+	"UPDATE registrations SET final_grade = ?, status = ? " +
 	"WHERE student_email = ? AND taught_course_id = ?";
 const DELETE_REGISTRATION_QUERY = 
 	"DELETE FROM registrations WHERE student_email = ? AND taught_course_id = ?";

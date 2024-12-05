@@ -22,7 +22,6 @@
     {:else if role.isProfessor}
         <div>
             <a href="/courses">Courses</a>
-            <a href="/departments">Departments</a>
             <a href="/logout">Logout</a>
         </div>
     {:else if role.isStudent}

@@ -617,6 +617,28 @@ func taughtCourses (w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func registrationsProfessor (w http.ResponseWriter, r *http.Request) {
+	enableSettings(&w);
+	switch (r.Method) {
+		case http.MethodGet:
+			pathParts := strings.Split(r.URL.Path, "/");
+			emailAndID := pathParts[4];
+			if (emailAndID == "") {
+				panic("Need Email Taught Course ID in path");
+			}
+			emailAndIDParts := strings.Split(emailAndID, "-");
+			if (len(emailAndIDParts) < 2) {
+				panic("Need Taught Course ID in path");
+			}
+			_, err := strconv.Atoi(emailAndIDParts[1]);
+			if err != nil {
+				panic("taughtCourseID is not an int");
+			}
+			json.NewEncoder(w).Encode(get.GetRegistrationsByProfessorEmailAndTaughtCourseID(emailAndIDParts[0], emailAndIDParts[1]));
+			break;
+	}
+}
+
 func registrations (w http.ResponseWriter, r *http.Request) {
 	enableSettings(&w);
 	switch (r.Method) {
@@ -719,6 +741,7 @@ func main() {
 	http.HandleFunc(settings.SEMESTERS_PATH, semesters);
 	http.HandleFunc(settings.TAUGHT_COURSES_PATH, taughtCourses);
 	http.HandleFunc(settings.REGISTRATIONS_PATH, registrations);
+	http.HandleFunc(settings.REGISTRATIONS_PROFESSOR_PATH, registrationsProfessor);
 	http.HandleFunc(settings.DEPARTMENTS_PATH, departments);
 	http.HandleFunc(settings.PROFESSORS_IN_DEPARTMENTS_PATH, professorsInDepartments);
 	http.HandleFunc(settings.USERS_BY_TOKEN_PATH, getUserByToken);
