@@ -188,7 +188,7 @@
         currentValue={taughtCourseTextFields.MaxStudents}
         onChangeNumberField={handleTextChange}
         inputID="MaxStudents"
-        minNumber={10}
+        minNumber={5}
         maxNumber={30}
     />
     <Dropdown

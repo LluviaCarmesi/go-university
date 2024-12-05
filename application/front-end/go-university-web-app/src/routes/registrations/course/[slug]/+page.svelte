@@ -95,7 +95,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{average}</td>
+                    <td>{average.toFixed(2)}</td>
                     <td>{grades.filter((grade) => grade >= 95).length}</td>
                     <td
                         >{grades.filter((grade) => grade < 95 && grade >= 90)
@@ -147,6 +147,7 @@
                     <th>Taught Course ID</th>
                     <th>Student Email</th>
                     <th>Course ID</th>
+                    <th>Semester</th>
                     <th>Final Grade</th>
                     <th>Status</th>
                     <th>Remove</th>
@@ -170,6 +171,9 @@
                         </td>
                         <td>
                             <span>{registration.CourseID}</span>
+                        </td>
+                        <td>
+                            <span>{registration.SemesterName}</span>
                         </td>
                         <td>
                             <span>{registration.FinalGrade}</span>

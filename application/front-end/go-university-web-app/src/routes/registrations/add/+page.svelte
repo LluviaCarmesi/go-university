@@ -36,6 +36,7 @@
         const addRegistrationResponse = await addRegistration({
             TaughtCourseID: taughtCourseID,
             CourseID: "",
+            SemesterName: "",
             StudentEmail: getCookie("email"),
             FinalGrade: 0,
             Status: "",

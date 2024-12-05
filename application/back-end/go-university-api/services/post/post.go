@@ -148,7 +148,7 @@ func AddAppointment(appointment models.Appointment) models.ServiceResponse {
 	appointments := get.GetAppointments();
 
 	for i := 0; i < len(appointments); i++ {
-		if (((appointment.StartTime.After(appointments[i].StartTime) || appointment.StartTime.Equal(appointments[i].StartTime)) && (appointment.StartTime.Before(appointments[i].EndTime) || appointment.StartTime.Equal(appointments[i].EndTime))) || (appointment.EndTime.After(appointments[i].StartTime) || appointment.EndTime.Equal(appointments[i].StartTime)) && (appointment.EndTime.Before(appointments[i].EndTime) || appointment.EndTime.Equal(appointments[i].EndTime))) {
+		if (!appointments[i].IsComplete && ((appointment.StartTime.After(appointments[i].StartTime) || appointment.StartTime.Equal(appointments[i].StartTime)) && (appointment.StartTime.Before(appointments[i].EndTime) || appointment.StartTime.Equal(appointments[i].EndTime))) || (appointment.EndTime.After(appointments[i].StartTime) || appointment.EndTime.Equal(appointments[i].StartTime)) && (appointment.EndTime.Before(appointments[i].EndTime) || appointment.EndTime.Equal(appointments[i].EndTime))) {
 			serviceResponse.IsSuccessful = false;
 			serviceResponse.ErrorMessage = "Appointment time conflicts with another";
 			return serviceResponse;
