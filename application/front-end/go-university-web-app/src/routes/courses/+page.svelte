@@ -42,13 +42,7 @@
         <div>
             <a href="taught-courses/professor">Show Courses</a>
         </div>
-        <div>
-            <a href="taught-courses/schedule">Schedule</a>
-        </div>
     {:else if role.isStudent}
-        <div>
-            <a href="taught-courses/grades-status">Grades and Status</a>
-        </div>
         <div>
             <a href="registrations/add">Register for classes</a>
         </div>

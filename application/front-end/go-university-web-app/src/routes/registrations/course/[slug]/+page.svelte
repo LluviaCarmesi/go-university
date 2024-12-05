@@ -40,7 +40,7 @@
             errorMessage = deleteRegistrationResponse.errorMessage;
         } else {
             errorMessage = "";
-            window.open(`course/${data.id}`, "_self");
+            window.open(`${data.id}`, "_self");
         }
         isLoading = false;
     }
@@ -75,6 +75,9 @@
             <span>No registrations as of now!</span>
         </div>
     {:else}
+    <div class="descriptionContainer">
+        <span>Total number of students: {registrations.length}</span>
+    </div>
         <table>
             <thead>
                 <tr>

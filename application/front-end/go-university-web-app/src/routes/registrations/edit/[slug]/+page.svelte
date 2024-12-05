@@ -83,6 +83,7 @@
             registrationTextFields.StudentEmail = registration.StudentEmail;
             registrationTextFields.FinalGrade = registration.FinalGrade;
             registrationTextFields.CourseID = registration.CourseID;
+            registrationTextFields.SemesterName = registration.SemesterName;
         } else {
             errorMessage = registrationResponse.errorMessage;
         }
@@ -117,21 +118,21 @@
         </div>
     {/if}
     <TextField
-        fieldLabel="StudentEmail"
+        fieldLabel="Student Email"
         currentValue={registrationTextFields.StudentEmail}
         onChangeTextField={handleTextChange}
         inputID="StudentEmail"
         isDisabled={true}
     />
     <TextField
-        fieldLabel="CourseID"
+        fieldLabel="Course ID"
         currentValue={registrationTextFields.CourseID}
         onChangeTextField={handleTextChange}
         inputID="CourseID"
         isDisabled={true}
     />
     <TextField
-        fieldLabel="SemesterName"
+        fieldLabel="Semester Name"
         currentValue={registrationTextFields.SemesterName}
         onChangeTextField={handleTextChange}
         inputID="SemesterName"
@@ -145,7 +146,7 @@
         dropdownOptions={REGISTRATION_STATUS_OPTIONS}
     />
     <NumberField
-        fieldLabel="FinalGrade"
+        fieldLabel="Final Grade"
         currentValue={registrationNumberFields.FinalGrade}
         onChangeNumberField={handleTextChange}
         inputID="FinalGrade"

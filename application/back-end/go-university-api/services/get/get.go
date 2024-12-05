@@ -201,6 +201,7 @@ func GetUsers() []models.User {
 		if (err != nil) {
 			panic("Error scanning row: " + err.Error());
 		}
+		user.Password = "";
 
 		users = append(users, user);
 	}
@@ -237,6 +238,7 @@ func GetUserByToken(token string) models.User{
 			panic("Error scanning row: " + err.Error());
 		}
 	}
+	user.Password = "";
 	return user;
 }
 
@@ -269,6 +271,7 @@ func GetUserByEmail(email string) models.User{
 			panic("Error scanning row: " + err.Error());
 		}
 	}
+	user.Password = "";
 	return user;
 }
 
