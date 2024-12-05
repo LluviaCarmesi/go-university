@@ -98,7 +98,7 @@
                 professorInDepartment.DepartmentID;
             professorInDepartmentTextFields.ProfessorEmail =
                 professorInDepartment.ProfessorEmail;
-            professorInDepartmentTextFields.ProfessorEmail =
+            professorInDepartmentTextFields.DepartmentName =
                 professorInDepartment.DepartmentName;
             professorInDepartmentCheckboxFields.IsLeader =
                 professorInDepartment.IsLeader;
@@ -140,6 +140,7 @@
         currentValue={professorInDepartmentTextFields.ProfessorEmail}
         onChangeTextField={handleTextChange}
         inputID="ProfessorEmail"
+        isDisabled={true}
     />
     <Dropdown
         fieldLabel="Department"
@@ -147,6 +148,7 @@
         onDropdownChange={handleDropdownChange}
         inputID="DepartmentID"
         dropdownOptions={createChoices(departments, "ID", "Name")}
+        isDisabled={true}
     />
     <Checkbox
         fieldLabel="Is Head of Department"
