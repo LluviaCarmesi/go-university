@@ -55,7 +55,7 @@
     }
 
     function handleDropdownChange(event: any) {
-        professorInDepartmentDropdownFields[event.target.id] = event.target.value;
+        professorInDepartmentDropdownFields[event.target.id] = parseInt(event.target.value);
     }
 
     async function submitProfessorInDepartment() {
